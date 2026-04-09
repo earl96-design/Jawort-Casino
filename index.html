@@ -673,8 +673,9 @@ function defaultState() {
 
 function save() { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
 
-// auto-init codes only on very first run (no codes AND no firstRun flag)
-if (!S.hasOwnProperty('initialized')) {
+// auto-init: only generate codes if this is a brand new state (no localStorage existed)
+// once initialized flag is set, NEVER auto-generate again
+if (S.initialized !== true && Object.keys(S.codes).length === 0) {
   S.initialized = true;
   const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   for (let i = 0; i < 150; i++) {
@@ -683,6 +684,10 @@ if (!S.hasOwnProperty('initialized')) {
     while (S.codes[c] !== undefined && t < 100);
     if (S.codes[c] === undefined) S.codes[c] = {used:false};
   }
+  save();
+} else if (S.initialized !== true) {
+  // existing state but no flag yet — just set the flag, don't touch codes
+  S.initialized = true;
   save();
 }
 
