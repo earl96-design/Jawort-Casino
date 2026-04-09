@@ -673,8 +673,7 @@ function defaultState() {
 
 function save() { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
 
-// auto-init 150 codes
-if (!Object.keys(S.codes).length) { genCodes(150, true); }
+// codes are only generated manually via admin dashboard
 
 // ══════════════════════════════════
 //  DEADLINE ENGINE
