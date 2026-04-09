@@ -1175,13 +1175,30 @@ function confirmReset(type) {
   const msgs = {
     participants: 'Alle Wetten und Teilnehmer löschen? Codes bleiben erhalten.',
     codes: 'Alle Codes löschen? Wetten bleiben erhalten.',
-    all: 'KOMPLETTEN Reset durchführen? Alle Daten werden gelöscht!'
+    all: 'KOMPLETTEN Reset durchführen? Alle Daten werden geloescht!'
   };
-  openModal('Bestätigung erforderlich', msgs[type], () => {
-    if (type === 'all') { S = defaultState(); genCodes(150, true); }
-    else if (type === 'participants') { S.participants = []; S.correctAnswers = {}; Object.keys(S.codes).forEach(k => S.codes[k].used=false); }
-    else if (type === 'codes') { S.codes = {}; }
-    save(); renderDash();
+  openModal('Bestaetigung erforderlich', msgs[type], () => {
+    if (type === 'all') {
+      const pw = S.adminPw;
+      S = defaultState();
+      S.adminPw = pw;
+      const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      for (let i = 0; i < 150; i++) {
+        let c, t = 0;
+        do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
+        while (S.codes[c] !== undefined && t < 100);
+        if (S.codes[c] === undefined) S.codes[c] = {used:false};
+      }
+    } else if (type === 'participants') {
+      S.participants = [];
+      S.correctAnswers = {};
+      Object.keys(S.codes).forEach(k => S.codes[k].used = false);
+    } else if (type === 'codes') {
+      S.codes = {};
+    }
+    save();
+    renderDash();
+    alert('Erfolgreich zurueckgesetzt.');
   });
 }
 
