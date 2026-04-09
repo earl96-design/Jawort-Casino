@@ -278,9 +278,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <div class="hdr-dot"></div>
     </div>
     <nav class="hdr-nav">
-      <div class="hdr-tab active" onclick="showPage('bet')">Wetten</div>
-      <div class="hdr-tab" onclick="showPage('board')">Leaderboard</div>
-      <div class="hdr-tab" onclick="showPage('admin')">Admin</div>
+      <div class="hdr-tab active" data-page="bet" id="tab-bet">Wetten</div>
+      <div class="hdr-tab" data-page="board" id="tab-board">Leaderboard</div>
+      <div class="hdr-tab" data-page="admin" id="tab-admin">Admin</div>
     </nav>
   </div>
 </header>
@@ -299,7 +299,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <div class="hero-date-dot"></div>
       <span class="hero-date-txt">LUDWIGSBURG</span>
       <div class="hero-date-dot"></div>
-      <span class="hero-date-txt" style="opacity:0.45;">v0.03</span>
+      <span class="hero-date-txt" style="opacity:0.45;">v0.05</span>
     </div>
   </div>
 </div>
@@ -320,7 +320,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         <h2>Wetten geschlossen</h2>
         <p>Die Wettphase ist beendet. Die Auswertung folgt live im Leaderboard.</p>
         <br>
-        <button class="btn btn-ghost" onclick="showPage('board')">Zum Leaderboard →</button>
+        <button class="btn btn-ghost" id="btn-goto-board">Zum Leaderboard →</button>
       </div>
     </div>
 
@@ -348,7 +348,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
              oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
              onkeydown="if(event.key==='Enter')validateCode()">
       <div id="code-error" class="alert alert-error hidden" style="margin-top:8px;"></div>
-      <button class="btn btn-primary btn-full" style="margin-top:10px;" onclick="validateCode()" id="btn-code">Code einlösen</button>
+      <button class="btn btn-primary btn-full" style="margin-top:10px;" id="btn-validate" id="btn-code">Code einlösen</button>
     </div>
 
     <!-- NAME STEP -->
@@ -362,7 +362,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         <label>Vor- und Nachname</label>
         <input type="text" class="fi" id="name-input" placeholder="z.B. Anna Müller" onkeydown="if(event.key==='Enter')startBetting()">
       </div>
-      <button class="btn btn-primary btn-full" onclick="startBetting()">Weiter →</button>
+      <button class="btn btn-primary btn-full" id="btn-start">Weiter →</button>
     </div>
 
     <!-- QUESTIONS STEP -->
@@ -383,7 +383,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <div id="q-container"></div>
       <div id="submit-wrap" class="hidden" style="margin-top:10px;">
         <div class="alert alert-success">Alle Antworten gegeben – bereit zum Absenden!</div>
-        <button class="btn btn-success btn-full" onclick="submitBet()">Wette abgeben 🎯</button>
+        <button class="btn btn-success btn-full" id="btn-submit">Wette abgeben 🎯</button>
       </div>
     </div>
 
@@ -394,8 +394,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         <h2>Wette platziert!</h2>
         <p>Deine Tipps sind gespeichert. Verfolge den Live-Stand im Leaderboard.</p>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="showPage('board')">Leaderboard →</button>
-          <button class="btn btn-ghost" onclick="viewMyBet()">Meine Wette ansehen</button>
+          <button class="btn btn-primary" id="btn-goto-board">Leaderboard →</button>
+          <button class="btn btn-ghost" id="btn-mybet">Meine Wette ansehen</button>
         </div>
       </div>
     </div>
@@ -403,7 +403,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
     <!-- MY BET VIEW -->
     <div id="step-mybet" class="hidden">
       <div style="padding:12px 0 16px;display:flex;align-items:center;gap:10px;">
-        <button class="btn btn-ghost btn-sm" onclick="showStep('step-done')">← Zurück</button>
+        <button class="btn btn-ghost btn-sm" id="btn-back-done">← Zurück</button>
         <span class="label">Deine Tipps</span>
       </div>
       <div class="card" id="mybet-container"></div>
@@ -447,7 +447,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         <label>Passwort</label>
         <input type="password" class="fi" id="adm-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')admLogin()">
       </div>
-      <button class="btn btn-primary btn-full" onclick="admLogin()">Einloggen</button>
+      <button class="btn btn-primary btn-full" id="btn-adm-login">Einloggen</button>
       <div id="adm-pw-err" class="alert alert-error hidden" style="margin-top:10px;"></div>
     </div>
 
@@ -455,7 +455,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 
       <div class="admin-hdr">
         <h2 class="h2">Dashboard</h2>
-        <button class="btn btn-ghost btn-sm" onclick="admLogout()">Abmelden</button>
+        <button class="btn btn-ghost btn-sm" id="btn-adm-logout">Abmelden</button>
       </div>
 
       <!-- Stats -->
@@ -496,7 +496,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
               <option value="closed">Manuell GESCHLOSSEN – Wetten gesperrt</option>
             </select>
           </div>
-          <button class="btn btn-primary btn-full" onclick="saveDeadline()">Deadline speichern</button>
+          <button class="btn btn-primary btn-full" id="btn-save-deadline">Deadline speichern</button>
           <div id="dl-status" style="margin-top:10px;"></div>
         </div>
       </div>
@@ -520,7 +520,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
             <label>Ticket-Preis (€)</label>
             <input type="number" class="fi" id="s-price" min="1" max="100">
           </div>
-          <button class="btn btn-primary btn-full" onclick="saveSettings()">Speichern</button>
+          <button class="btn btn-primary btn-full" id="btn-save-settings">Speichern</button>
         </div>
       </div>
 
@@ -532,7 +532,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         </div>
         <div class="sec-bd">
           <div id="q-editor"></div>
-          <button class="btn btn-ghost btn-full" onclick="saveQuestions()" style="margin-top:8px;">Fragen speichern</button>
+          <button class="btn btn-ghost btn-full" id="btn-save-questions" style="margin-top:8px;">Fragen speichern</button>
         </div>
       </div>
 
@@ -545,7 +545,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         <div class="sec-bd">
           <div class="alert alert-info" style="margin-top:12px;">Antworten eintragen → Punkte werden sofort berechnet. Leaderboard aktualisiert sich live.</div>
           <div id="ans-editor"></div>
-          <button class="btn btn-success btn-full" onclick="saveAnswers()" style="margin-top:12px;">Auswertung starten 🏆</button>
+          <button class="btn btn-success btn-full" id="btn-save-answers" style="margin-top:12px;">Auswertung starten 🏆</button>
         </div>
       </div>
 
@@ -569,9 +569,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         <div class="sec-bd">
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
             <input type="number" class="fi" id="gen-n" value="150" min="1" max="500" style="width:90px;">
-            <button class="btn btn-ghost btn-sm" onclick="genCodes()">Generieren</button>
-            <button class="btn btn-ghost btn-sm" onclick="exportCodes()">Export TXT</button>
-            <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+            <button class="btn btn-ghost btn-sm" id="btn-gen-codes">Generieren</button>
+            <button class="btn btn-ghost btn-sm" id="btn-export-codes">Export TXT</button>
+            <button class="btn btn-ghost btn-sm" id="btn-export-csv">Export CSV</button>
           </div>
           <div style="display:flex;gap:8px;margin:10px 0;">
             <span class="pill pill-green" id="c-avail">0 verfügbar</span>
@@ -583,7 +583,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
             <label>Code zurücksetzen (bei Fehleingabe)</label>
             <div style="display:flex;gap:8px;">
               <input type="text" class="fi" id="reset-code-input" placeholder="CODE" style="text-transform:uppercase;letter-spacing:2px;font-weight:600;">
-              <button class="btn btn-ghost btn-sm" onclick="resetCodePrompt()">Zurücksetzen</button>
+              <button class="btn btn-ghost btn-sm" id="btn-reset-code">Zurücksetzen</button>
             </div>
           </div>
         </div>
@@ -597,7 +597,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
         </div>
         <div class="sec-bd">
           <div style="display:flex;gap:8px;margin:12px 0 10px;">
-            <button class="btn btn-ghost btn-sm" onclick="exportParticipantsCSV()">Export CSV</button>
+            <button class="btn btn-ghost btn-sm" id="btn-export-parts">Export CSV</button>
           </div>
           <div id="pt-list"></div>
         </div>
@@ -630,13 +630,25 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
     <h3 id="modal-title">Bestätigung</h3>
     <p id="modal-text">Bist du sicher?</p>
     <div class="modal-btns">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Abbrechen</button>
+      <button class="btn btn-ghost btn-sm" id="btn-modal-cancel">Abbrechen</button>
       <button class="btn btn-danger btn-sm" id="modal-confirm">Bestätigen</button>
     </div>
   </div>
 </div>
 
+
 <script>
+// Global error catcher - shows errors visibly for debugging
+window.onerror = function(msg, src, line, col, err) {
+  var d = document.getElementById('js-error-banner');
+  if (!d) { d = document.createElement('div'); d.id='js-error-banner';
+    d.style.cssText='position:fixed;top:0;left:0;right:0;background:#C0392B;color:white;padding:10px 14px;font-size:12px;z-index:9999;font-family:monospace;cursor:pointer;';
+    d.onclick=function(){d.style.display='none';};
+    document.body.appendChild(d); }
+  d.textContent = '⚠ JS Error: ' + msg + ' (line ' + line + ') — tap to dismiss';
+  d.style.display = 'block';
+  return false;
+};
 // ══════════════════════════════════════════════════════
 //  STORAGE — two separate keys, never conflict
 //  hw_cfg  = config, questions, deadline, settings
@@ -753,14 +765,20 @@ function startCountdown() {
 //  NAV
 // ══════════════════════════════════
 function showPage(p) {
+  // hide all pages
   document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  // deactivate all tabs
   document.querySelectorAll('.hdr-tab').forEach(x => x.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');
-  ['bet','board','admin'].forEach((n,i) =>
-    document.querySelectorAll('.hdr-tab')[i].classList.toggle('active', n===p));
-  if (p==='board') renderLeaderboard();
-  if (p==='admin' && admIn) renderDash();
-  if (p==='bet')   { checkBetState(); startCountdown(); }
+  // show target page
+  var pageEl = document.getElementById('page-'+p);
+  if (pageEl) pageEl.classList.add('active');
+  // activate matching tab
+  var tabEl = document.querySelector('[data-page="'+p+'"]');
+  if (tabEl) tabEl.classList.add('active');
+  // page-specific actions
+  if (p === 'board') renderLeaderboard();
+  if (p === 'admin' && admIn) renderDash();
+  if (p === 'bet') { checkBetState(); startCountdown(); }
 }
 
 function checkBetState() {
@@ -1118,8 +1136,7 @@ function renderCodesGrid() {
 
 function exportCodes() {
   const lines = Object.entries(getCodes()).filter(([,v])=>!v.used).map(([k])=>k);
-  dlFile(lines.join('
-'), 'jawort-casino-codes.txt', 'text/plain');
+  dlFile(lines.join('\n'), 'jawort-casino-codes.txt', 'text/plain');
 }
 
 function exportCSV() {
@@ -1129,8 +1146,7 @@ function exportCSV() {
     const p = bets.find(x => x.code===c);
     rows.push([c, v.used?'Verwendet':'Verfügbar', p?p.name:'']);
   });
-  dlFile(rows.map(r=>r.join(',')).join('
-'), 'codes.csv', 'text/csv');
+  dlFile(rows.map(r=>r.join(',')).join('\n'), 'codes.csv', 'text/csv');
 }
 
 function exportParticipantsCSV() {
@@ -1139,8 +1155,7 @@ function exportParticipantsCSV() {
   const rows = [['Name','Code','Punkte','Zeitpunkt']];
   [...bets].sort((a,b)=>b.score-a.score).forEach(p =>
     rows.push([p.name, p.code, p.score+'/'+(ans||CFG.questions.length), fmtTime(p.ts)]));
-  dlFile(rows.map(r=>r.join(',')).join('
-'), 'teilnehmer.csv', 'text/csv');
+  dlFile(rows.map(r=>r.join(',')).join('\n'), 'teilnehmer.csv', 'text/csv');
 }
 
 function resetCodePrompt() {
@@ -1260,10 +1275,75 @@ function showErr(el, msg) {
 function toggleSec(head) { head.closest('.sec').classList.toggle('open'); }
 
 // ── INIT ──
-checkBetState();
-startCountdown();
-updateBanner();
-setInterval(updateBanner, 30000);
+function bindEvents() {
+  // Nav
+  var tabBet = document.getElementById('tab-bet');
+  var tabBoard = document.getElementById('tab-board');
+  var tabAdmin = document.getElementById('tab-admin');
+  if (tabBet)   tabBet.addEventListener('click',   function(){ showPage('bet'); });
+  if (tabBoard) tabBoard.addEventListener('click',  function(){ showPage('board'); });
+  if (tabAdmin) tabAdmin.addEventListener('click',  function(){ showPage('admin'); });
+
+  // Bet flow
+  var btnValidate = document.getElementById('btn-validate');
+  var btnStart    = document.getElementById('btn-start');
+  var btnSubmit   = document.getElementById('btn-submit');
+  var btnMybet    = document.getElementById('btn-mybet');
+  var btnBoard    = document.getElementById('btn-goto-board');
+  var btnBackDone = document.getElementById('btn-back-done');
+  if (btnValidate) btnValidate.addEventListener('click', validateCode);
+  if (btnStart)    btnStart.addEventListener('click',    startBetting);
+  if (btnSubmit)   btnSubmit.addEventListener('click',   submitBet);
+  if (btnMybet)    btnMybet.addEventListener('click',    viewMyBet);
+  if (btnBoard)    btnBoard.addEventListener('click',    function(){ showPage('board'); });
+  if (btnBackDone) btnBackDone.addEventListener('click', function(){ showStep('step-done'); });
+
+  // code input enter key
+  var codeInput = document.getElementById('code-input');
+  if (codeInput) codeInput.addEventListener('keydown', function(e){ if(e.key==='Enter') validateCode(); });
+  var nameInput = document.getElementById('name-input');
+  if (nameInput) nameInput.addEventListener('keydown', function(e){ if(e.key==='Enter') startBetting(); });
+  var admPw = document.getElementById('adm-pw');
+  if (admPw) admPw.addEventListener('keydown', function(e){ if(e.key==='Enter') admLogin(); });
+
+  // Admin
+  var btnAdmLogin    = document.getElementById('btn-adm-login');
+  var btnAdmLogout   = document.getElementById('btn-adm-logout');
+  var btnDeadline    = document.getElementById('btn-save-deadline');
+  var btnSettings    = document.getElementById('btn-save-settings');
+  var btnQuestions   = document.getElementById('btn-save-questions');
+  var btnAnswers     = document.getElementById('btn-save-answers');
+  var btnGenCodes    = document.getElementById('btn-gen-codes');
+  var btnExportCodes = document.getElementById('btn-export-codes');
+  var btnExportCsv   = document.getElementById('btn-export-csv');
+  var btnExportParts = document.getElementById('btn-export-parts');
+  var btnResetCode   = document.getElementById('btn-reset-code');
+  var btnModalCancel = document.getElementById('btn-modal-cancel');
+  if (btnAdmLogin)    btnAdmLogin.addEventListener('click',    admLogin);
+  if (btnAdmLogout)   btnAdmLogout.addEventListener('click',   admLogout);
+  if (btnDeadline)    btnDeadline.addEventListener('click',    saveDeadline);
+  if (btnSettings)    btnSettings.addEventListener('click',    saveSettings);
+  if (btnQuestions)   btnQuestions.addEventListener('click',   saveQuestions);
+  if (btnAnswers)     btnAnswers.addEventListener('click',     saveAnswers);
+  if (btnGenCodes)    btnGenCodes.addEventListener('click',    genCodes);
+  if (btnExportCodes) btnExportCodes.addEventListener('click', exportCodes);
+  if (btnExportCsv)   btnExportCsv.addEventListener('click',   exportCSV);
+  if (btnExportParts) btnExportParts.addEventListener('click', exportParticipantsCSV);
+  if (btnResetCode)   btnResetCode.addEventListener('click',   resetCodePrompt);
+  if (btnModalCancel) btnModalCancel.addEventListener('click', closeModal);
+
+  // Modal overlay close
+  var modal = document.getElementById('modal');
+  if (modal) modal.addEventListener('click', function(e){ if(e.target===e.currentTarget) closeModal(); });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  bindEvents();
+  checkBetState();
+  startCountdown();
+  updateBanner();
+  setInterval(updateBanner, 30000);
+});
 </script>
 </body>
 </html>
