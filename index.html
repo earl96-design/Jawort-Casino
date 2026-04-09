@@ -150,7 +150,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink);min-heig
       <span class="hdt">SAMSTAG</span><div class="hdd"></div>
       <span class="hdt">08. AUGUST 2026</span><div class="hdd"></div>
       <span class="hdt">LUDWIGSBURG</span><div class="hdd"></div>
-      <span class="hdt" style="opacity:.45">v0.06</span>
+      <span class="hdt" style="opacity:.45">v0.07</span>
     </div>
   </div>
 </div>
@@ -279,6 +279,9 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink);min-heig
 "use strict";
 
 var KC="jc_codes_v1",KB="jc_bets_v1",KF="jc_cfg_v1";
+// MASTER CODE LIST - embedded in HTML, works on all devices
+// Format: {CODE: false} - false means not used by default
+var MASTER_CODES = {"27X7UM": false, "2C3MR9": false, "2TU2J6": false, "3CZMPN": false, "3ED2R2": false, "3NX2FR": false, "44XD4U": false, "476GQM": false, "4F87SK": false, "4FRJB9": false, "4JJBC4": false, "4K893Y": false, "4LWRW3": false, "4LXD74": false, "4MK45Y": false, "53EHZT": false, "5P3W3P": false, "5Y764D": false, "6J446W": false, "6WJLZ7": false, "7CSS4V": false, "7LQVZX": false, "7PY4XK": false, "865JGX": false, "8CWMY6": false, "8DM53A": false, "98RSVH": false, "9EL2UE": false, "9FKW77": false, "9UE84G": false, "9WQ5D6": false, "A6Z5EY": false, "A8UWLL": false, "AA4X4X": false, "ACGN8E": false, "AH24QH": false, "APCGWA": false, "ASJ5TD": false, "AUGWZC": false, "BFUDMX": false, "BMZ3RT": false, "BSTSGC": false, "D4SP6P": false, "D5B2BG": false, "D763B7": false, "DBA4FD": false, "DFBD2N": false, "DGHUZ8": false, "DR353V": false, "DT25L2": false, "E4WYPQ": false, "ED8RD2": false, "ELHGAQ": false, "EUZJVL": false, "EYQCS2": false, "F2F6C3": false, "FALZUP": false, "FGN8RZ": false, "GJGAJA": false, "GSQMYK": false, "H36E9N": false, "H4A48C": false, "HM8TTE": false, "HQWRF2": false, "HVRY4N": false, "J64XQG": false, "JAGTG9": false, "JHZ35B": false, "JMFUQJ": false, "JT5PXG": false, "JXH2SD": false, "KHYMM4": false, "KZDZGM": false, "KZYCJE": false, "L4FVWN": false, "L5LY9Y": false, "L8XWH6": false, "LDNTU8": false, "LNUTJX": false, "M2BVU2": false, "MDNBS8": false, "MMFW4C": false, "MSAB85": false, "MZMDDP": false, "N3H5GE": false, "NDEXG7": false, "NRPLQR": false, "NXQ7TW": false, "P6YLRU": false, "PHH76X": false, "PN6NU8": false, "PR4MKR": false, "PTGYMJ": false, "PY87GN": false, "Q5VYFP": false, "Q8NZMY": false, "QGR3RF": false, "QHP6MF": false, "QUBJTH": false, "QWFE88": false, "R2SEFP": false, "R42J33": false, "RFQRW2": false, "RGVHRC": false, "RPBEV8": false, "RXCD48": false, "RYEHQC": false, "S3NDX2": false, "S4KJJ7": false, "SADHGW": false, "SHY78W": false, "SMSMAX": false, "SRQAU8": false, "SURH4A": false, "TGBXZY": false, "TTMLWP": false, "TTNCL4": false, "TYMESU": false, "TZFRP9": false, "UQLQA6": false, "UWRDZK": false, "UZCV6D": false, "V64BZ9": false, "V6KVUG": false, "VCFS6N": false, "VCYBG3": false, "VLNW7G": false, "VQAT2D": false, "VUSMBB": false, "WDQEDH": false, "WFKJTL": false, "WH7B2S": false, "WKTP5L": false, "WR4USG": false, "WR8GP6": false, "WXE59B": false, "WY2XTW": false, "XFBYV9": false, "XKQQG4": false, "XSLAEV": false, "YKF5KD": false, "YRT4JP": false, "YSV4GR": false, "YWRM95": false, "YXH35N": false, "Z5LDLL": false, "ZE9YVJ": false, "ZFDY5R": false, "ZMUWB7": false, "ZNDKSS": false};
 var DEF={title:"Jawort-Casino",adminPw:"admin123",ticketPrice:5,deadline:{mode:"open",date:"",time:""},correctAnswers:{},questions:[
   {id:1, text:"Weint jemand waehrend der Trauung?",opts:["Ja","Nein"]},
   {id:2, text:"Kommt die Braut puenktlich (+-5 Min.)?",opts:["Ja, puenktlich","Nein, zu spaet"]},
@@ -295,10 +298,26 @@ var DEF={title:"Jawort-Casino",adminPw:"admin123",ticketPrice:5,deadline:{mode:"
 ]};
 function rd(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-function GC(){return rd(KC,{});}
+function GC(){
+  // Merge master codes with used-status from localStorage
+  var used=rd(KC,{});
+  var result={};
+  var keys=Object.keys(MASTER_CODES);
+  for(var i=0;i<keys.length;i++){
+    result[keys[i]]={used:used[keys[i]]===true};
+  }
+  return result;
+}
 function GB(){return rd(KB,[]);}
 function GF(){var f=rd(KF,null);if(!f)return JSON.parse(JSON.stringify(DEF));return f;}
-function SC(c){wr(KC,c);}function SB(b){wr(KB,b);}function SF(f){wr(KF,f);}
+function SC(c){
+  // Only store used-status, not the full code list
+  var used={};
+  var keys=Object.keys(c);
+  for(var i=0;i<keys.length;i++){if(c[keys[i]].used)used[keys[i]]=true;}
+  wr(KC,used);
+}
+function SB(b){wr(KB,b);}function SF(f){wr(KF,f);}
 function $(id){return document.getElementById(id);}
 function show(id){$(id).classList.remove("hid");}
 function hide(id){$(id).classList.add("hid");}
@@ -332,7 +351,36 @@ function saveQs(){var f=GF();for(var i=0;i<f.questions.length;i++){var q=f.quest
 function renderAnsEd(f){var qs=f.questions,ans=f.correctAnswers||{},html="";for(var i=0;i<qs.length;i++){var q=qs[i];html+='<div class="ar"><div class="aq">'+esc(q.text)+'</div><select class="as" id="ae'+q.id+'"><option value="">- offen -</option>';for(var j=0;j<q.opts.length;j++)html+='<option value="'+escA(q.opts[j])+'"'+(ans[q.id]===q.opts[j]?" selected":"")+'>'+esc(q.opts[j])+'</option>';html+='</select></div>';}$("ans-ed").innerHTML=html;}
 function saveAns(){var f=GF();f.correctAnswers=f.correctAnswers||{};for(var i=0;i<f.questions.length;i++){var q=f.questions[i],s=$("ae"+q.id);if(s&&s.value)f.correctAnswers[q.id]=s.value;}var bets=GB();recalc(bets,f);SB(bets);SF(f);renderDash();alert("Auswertung gespeichert.");}
 function renderCG(codes){var all=Object.entries(codes),av=all.filter(function(e){return!e[1].used;}).length,us=all.filter(function(e){return e[1].used;}).length;$("c-av").textContent=av+" frei";$("c-us").textContent=us+" genutzt";var html="";for(var i=0;i<all.length;i++)html+='<div class="cc '+(all[i][1].used?"us":"fr")+'">'+all[i][0]+'</div>';$("cg").innerHTML=html;}
-function genCodes(){var n=parseInt($("gen-n").value)||150,ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",codes=GC(),added=0;for(var i=0;i<n;i++){var c="",t=0;do{c="";for(var j=0;j<6;j++)c+=ch[Math.floor(Math.random()*ch.length)];t++;}while(codes.hasOwnProperty(c)&&t<100);if(!codes.hasOwnProperty(c)){codes[c]={used:false};added++;}}SC(codes);renderCG(codes);alert(added+" Codes generiert.");}
+function genCodes(){
+  var n=parseInt($("gen-n").value)||150;
+  var ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  var existing=Object.keys(MASTER_CODES);
+  var newCodes=JSON.parse(JSON.stringify(MASTER_CODES));
+  var added=0;
+  for(var i=0;i<n;i++){
+    var c="",t=0;
+    do{c="";for(var j=0;j<6;j++)c+=ch[Math.floor(Math.random()*ch.length)];t++;}
+    while(newCodes.hasOwnProperty(c)&&t<100);
+    if(!newCodes.hasOwnProperty(c)){newCodes[c]=false;added++;}
+  }
+  // Update MASTER_CODES in memory
+  var keys=Object.keys(newCodes);
+  for(var k=0;k<keys.length;k++) MASTER_CODES[keys[k]]=newCodes[keys[k]];
+  // Generate new HTML with updated codes
+  exportNewHtml();
+  renderCG(GC());
+  alert(added+" Codes generiert. Bitte die neue HTML-Datei herunterladen und auf Netlify hochladen!");
+}
+
+function exportNewHtml(){
+  // Replace MASTER_CODES in the current HTML source
+  var codesJson=JSON.stringify(MASTER_CODES);
+  var src=document.documentElement.outerHTML;
+  // Find and replace the MASTER_CODES declaration
+  var re=/var MASTER_CODES = \{[^;]*\};/;
+  var newSrc=src.replace(re,"var MASTER_CODES = "+codesJson+";");
+  dlFile(newSrc,"jawort-casino-v0.06.html","text/html");
+}
 function dlFile(content,name,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type:type}));a.download=name;a.click();}
 function expTxt(){var c=GC(),lines=Object.keys(c).filter(function(k){return!c[k].used;});dlFile(lines.join("\n"),"codes.txt","text/plain");}
 function expCsv(){var c=GC(),b=GB(),rows=[["Code","Status","Teilnehmer"]];Object.keys(c).forEach(function(k){var p=null;for(var i=0;i<b.length;i++)if(b[i].code===k){p=b[i];break;}rows.push([k,c[k].used?"Verwendet":"Frei",p?p.name:""]);});dlFile(rows.map(function(r){return r.join(",");}).join("\n"),"codes.csv","text/csv");}
