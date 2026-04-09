@@ -299,7 +299,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <div class="hero-date-dot"></div>
       <span class="hero-date-txt">LUDWIGSBURG</span>
       <div class="hero-date-dot"></div>
-      <span class="hero-date-txt" style="opacity:0.45;">v0.02</span>
+      <span class="hero-date-txt" style="opacity:0.45;">v0.03</span>
     </div>
   </div>
 </div>
@@ -637,22 +637,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
 </div>
 
 <script>
-// ══════════════════════════════════
-//  STATE
-// ══════════════════════════════════
-const STORE_KEY = 'hw_v4';
+// ══════════════════════════════════════════════════════
+//  STORAGE — two separate keys, never conflict
+//  hw_cfg  = config, questions, deadline, settings
+//  hw_codes = { "ABC123": { used: false }, ... }
+//  hw_bets  = [ { id, name, code, answers, score, ts } ]
+// ══════════════════════════════════════════════════════
+const KEY_CFG   = 'hw_cfg_v1';
+const KEY_CODES = 'hw_codes_v1';
+const KEY_BETS  = 'hw_bets_v1';
 
-let S = (() => {
-  try { const s = localStorage.getItem(STORE_KEY); if (s) return JSON.parse(s); } catch(e) {}
-  return null;
-})() || defaultState();
-
-function defaultState() {
+function loadCfg() {
+  try { const r = localStorage.getItem(KEY_CFG); if (r) return JSON.parse(r); } catch(e) {}
   return {
     title: 'Jawort-Casino',
     adminPw: 'admin123',
     ticketPrice: 5,
     deadline: { mode: 'open', date: '', time: '' },
+    correctAnswers: {},
     questions: [
       { id:1,  text: 'Weint jemand während der Trauung?',           options: ['Ja','Nein'] },
       { id:2,  text: 'Kommt die Braut pünktlich (±5 Min.)?',        options: ['Ja, pünktlich','Nein, zu spät'] },
@@ -666,128 +668,89 @@ function defaultState() {
       { id:10, text: 'Wer weint als erstes?',                       options: ['Braut','Bräutigam','Jemand aus Publikum','Niemand'] },
       { id:11, text: 'Wie lange dauert der erste Tanz?',            options: ['Unter 2 Min.','2–4 Min.','Über 4 Min.'] },
       { id:12, text: 'Wann verlässt das Brautpaar die Feier?',      options: ['Vor Mitternacht','Nach Mitternacht'] }
-    ],
-    correctAnswers: {},
-    codes: {},
-    participants: []
+    ]
   };
 }
 
-function save() {
-  try {
-    localStorage.setItem(STORE_KEY, JSON.stringify(S));
-  } catch(e) {
-    console.error('Save failed:', e);
-  }
+function loadCodes() {
+  try { const r = localStorage.getItem(KEY_CODES); if (r) return JSON.parse(r); } catch(e) {}
+  return {};
 }
 
-// always sync S from localStorage before critical reads
-function syncFromStorage() {
-  try {
-    const raw = localStorage.getItem(STORE_KEY);
-    if (!raw) return;
-    const parsed = JSON.parse(raw);
-    S.codes = parsed.codes || S.codes;
-    S.participants = parsed.participants || S.participants;
-    S.correctAnswers = parsed.correctAnswers || S.correctAnswers;
-    S.deadline = parsed.deadline || S.deadline;
-    S.initialized = parsed.initialized;
-  } catch(e) {}
+function loadBets() {
+  try { const r = localStorage.getItem(KEY_BETS); if (r) return JSON.parse(r); } catch(e) {}
+  return [];
 }
 
-// auto-init: only generate codes if this is a brand new state (no localStorage existed)
-// once initialized flag is set, NEVER auto-generate again
-if (S.initialized !== true && Object.keys(S.codes).length === 0) {
-  S.initialized = true;
-  const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  for (let i = 0; i < 150; i++) {
-    let c, t = 0;
-    do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
-    while (S.codes[c] !== undefined && t < 100);
-    if (S.codes[c] === undefined) S.codes[c] = {used:false};
-  }
-  save();
-} else if (S.initialized !== true) {
-  // existing state but no flag yet — just set the flag, don't touch codes
-  S.initialized = true;
-  save();
-}
+function saveCfg()   { localStorage.setItem(KEY_CFG,   JSON.stringify(CFG)); }
+function saveCodes() { localStorage.setItem(KEY_CODES, JSON.stringify(CODES)); }
+function saveBets()  { localStorage.setItem(KEY_BETS,  JSON.stringify(BETS)); }
+
+// always read fresh from storage (never trust in-memory for codes)
+function getCodes()  { try { const r = localStorage.getItem(KEY_CODES); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
+function getBets()   { try { const r = localStorage.getItem(KEY_BETS);  return r ? JSON.parse(r) : []; } catch(e) { return []; } }
+
+let CFG   = loadCfg();
+let CODES = loadCodes();
+let BETS  = loadBets();
 
 // ══════════════════════════════════
-//  DEADLINE ENGINE
+//  DEADLINE
 // ══════════════════════════════════
 function isOpen() {
-  const d = S.deadline;
-  if (d.mode === 'open') return true;
+  const d = CFG.deadline;
+  if (d.mode === 'open')   return true;
   if (d.mode === 'closed') return false;
-  if (!d.date || !d.time) return true;
+  if (!d.date || !d.time)  return true;
   return new Date() < new Date(d.date + 'T' + d.time);
 }
 
 function getDeadlineDate() {
-  const d = S.deadline;
+  const d = CFG.deadline;
   if (!d.date || !d.time) return null;
   return new Date(d.date + 'T' + d.time);
 }
 
 function updateBanner() {
   const banner = document.getElementById('deadline-banner');
-  const dl = getDeadlineDate();
-  const open = isOpen();
   banner.className = 'deadline-banner';
-
-  if (S.deadline.mode === 'open') {
-    banner.classList.add('show', 'open');
+  if (CFG.deadline.mode === 'open') {
+    banner.classList.add('show','open');
     banner.textContent = '✓ Wetten sind offen';
-  } else if (S.deadline.mode === 'closed') {
-    banner.classList.add('show', 'closed');
+  } else if (CFG.deadline.mode === 'closed') {
+    banner.classList.add('show','closed');
     banner.textContent = '🔒 Wetten sind geschlossen';
-  } else if (dl) {
-    if (!open) {
-      banner.classList.add('show', 'closed');
+  } else {
+    const dl = getDeadlineDate();
+    if (dl && new Date() >= dl) {
+      banner.classList.add('show','closed');
       banner.textContent = '🔒 Wetten geschlossen';
-    } else {
+    } else if (dl) {
       const diff = dl - new Date();
-      const hrs = Math.floor(diff / 3600000);
-      if (hrs < 2) {
-        banner.classList.add('show', 'amber');
-        banner.textContent = '⏱ Wetten schließen bald!';
-      }
+      if (diff < 7200000) { banner.classList.add('show','amber'); banner.textContent = '⏱ Wetten schließen bald!'; }
     }
   }
 }
 
-// countdown timer
 let cdInterval = null;
 function startCountdown() {
   if (cdInterval) clearInterval(cdInterval);
   const wrap = document.getElementById('countdown-wrap');
   const dl = getDeadlineDate();
-  if (!dl || !isOpen() || S.deadline.mode !== 'auto') { wrap.classList.add('hidden'); return; }
+  if (!dl || CFG.deadline.mode !== 'auto') { wrap.classList.add('hidden'); return; }
   wrap.classList.remove('hidden');
-
   function tick() {
     const diff = dl - new Date();
     if (diff <= 0) { wrap.classList.add('hidden'); clearInterval(cdInterval); checkBetState(); return; }
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
-    document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
-    document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+    document.getElementById('cd-h').textContent = String(Math.floor(diff/3600000)).padStart(2,'0');
+    document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
   }
-  tick();
-  cdInterval = setInterval(tick, 1000);
-}
-
-function checkBetState() {
-  const open = isOpen();
-  document.getElementById('bet-closed').classList.toggle('hidden', open);
-  document.getElementById('step-code').classList.toggle('hidden', !open);
+  tick(); cdInterval = setInterval(tick, 1000);
 }
 
 // ══════════════════════════════════
-//  NAVIGATION
+//  NAV
 // ══════════════════════════════════
 function showPage(p) {
   document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
@@ -797,13 +760,17 @@ function showPage(p) {
     document.querySelectorAll('.hdr-tab')[i].classList.toggle('active', n===p));
   if (p==='board') renderLeaderboard();
   if (p==='admin' && admIn) renderDash();
-  if (p==='bet') { checkBetState(); startCountdown(); }
+  if (p==='bet')   { checkBetState(); startCountdown(); }
 }
 
-// migrate stale title from old versions
-if (S.title === 'Hochzeits-Wetten') { S.title = 'Jawort-Casino'; save(); }
-document.getElementById('hdr-title').textContent = S.title;
-document.title = S.title;
+function checkBetState() {
+  const open = isOpen();
+  document.getElementById('bet-closed').classList.toggle('hidden', open);
+  document.getElementById('step-code').classList.toggle('hidden', !open);
+}
+
+document.getElementById('hdr-title').textContent = CFG.title;
+document.title = CFG.title;
 
 // ══════════════════════════════════
 //  BETTING FLOW
@@ -818,30 +785,32 @@ function showStep(s) {
 
 function validateCode() {
   if (!isOpen()) { checkBetState(); return; }
-  const raw = document.getElementById('code-input').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+
+  // always read fresh from storage
+  const freshCodes = getCodes();
+  const freshBets  = getBets();
+
+  const v = document.getElementById('code-input').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
   const e = document.getElementById('code-error');
   e.classList.add('hidden');
 
-  if (!raw) { showErr(e, 'Bitte Code eingeben.'); return; }
+  if (!v) { showErr(e, 'Bitte Code eingeben.'); return; }
 
-  // reload state fresh from localStorage before every validation
-  try {
-    const fresh = localStorage.getItem(STORE_KEY);
-    if (fresh) {
-      const parsed = JSON.parse(fresh);
-      S.codes = parsed.codes || {};
-      S.participants = parsed.participants || [];
-      S.correctAnswers = parsed.correctAnswers || {};
-    }
-  } catch(err) {}
-
-  const v = raw;
-  if (!(v in S.codes)) { showErr(e, 'Code nicht gefunden – bitte nochmal prüfen.'); return; }
-  if (S.codes[v].used) {
-    const p = S.participants.find(x => x.code === v);
-    if (p) { _code = v; _name = p.name; showStep('step-done'); return; }
-    showErr(e, 'Dieser Code wurde bereits eingelöst.'); return;
+  if (!(v in freshCodes)) {
+    showErr(e, 'Code nicht gefunden – bitte nochmal prüfen.');
+    return;
   }
+
+  if (freshCodes[v].used === true) {
+    const existing = freshBets.find(x => x.code === v);
+    if (existing) { _code = v; _name = existing.name; showStep('step-done'); return; }
+    showErr(e, 'Dieser Code wurde bereits eingelöst.');
+    return;
+  }
+
+  // valid unused code
+  CODES = freshCodes;
+  BETS  = freshBets;
   _code = v;
   showStep('step-name');
   setTimeout(() => document.getElementById('name-input').focus(), 100);
@@ -849,8 +818,7 @@ function validateCode() {
 
 function startBetting() {
   const n = document.getElementById('name-input').value.trim();
-  if (!n) { alert('Bitte Namen eingeben.'); return; }
-  if (n.length < 2) { alert('Name zu kurz.'); return; }
+  if (!n || n.length < 2) { alert('Bitte gültigen Namen eingeben.'); return; }
   _name = n; _ans = {};
   document.getElementById('p-nm').textContent = n;
   document.getElementById('p-cd').textContent = 'Code: ' + _code;
@@ -860,12 +828,12 @@ function startBetting() {
 }
 
 function renderQuestions() {
-  document.getElementById('q-container').innerHTML = S.questions.map((q, i) => `
+  document.getElementById('q-container').innerHTML = CFG.questions.map((q,i) => `
     <div class="q-card" id="qc-${q.id}">
-      <div class="q-num">Frage ${i+1} / ${S.questions.length}</div>
+      <div class="q-num">Frage ${i+1} / ${CFG.questions.length}</div>
       <div class="q-text">${q.text}</div>
       <div class="opts">
-        ${q.options.map(o => `<button class="opt" onclick="pick(${q.id},'${o.replace(/'/g,"\\'")}',this)">${o}</button>`).join('')}
+        ${q.options.map(o => `<button class="opt" onclick="pick(${q.id},'${o.replace(/'/g,"\'")}',this)">${o}</button>`).join('')}
       </div>
     </div>`).join('');
   updateProg();
@@ -877,13 +845,12 @@ function pick(qId, val, btn) {
   _ans[qId] = val;
   document.getElementById('qc-'+qId).classList.add('answered');
   updateProg();
-  // smooth scroll to next unanswered
-  const next = S.questions.find(q => !_ans[q.id]);
+  const next = CFG.questions.find(q => !_ans[q.id]);
   if (next) setTimeout(() => document.getElementById('qc-'+next.id)?.scrollIntoView({behavior:'smooth',block:'nearest'}), 200);
 }
 
 function updateProg() {
-  const d = Object.keys(_ans).length, t = S.questions.length;
+  const d = Object.keys(_ans).length, t = CFG.questions.length;
   document.getElementById('prog').style.width = (d/t*100)+'%';
   document.getElementById('prog-lbl').textContent = d+' / '+t;
   document.getElementById('submit-wrap').classList.toggle('hidden', d < t);
@@ -891,32 +858,44 @@ function updateProg() {
 
 function submitBet() {
   if (_submitLock) return;
-  if (Object.keys(_ans).length < S.questions.length) { alert('Alle Fragen beantworten!'); return; }
+  if (Object.keys(_ans).length < CFG.questions.length) { alert('Alle Fragen beantworten!'); return; }
   if (!isOpen()) { alert('Die Wettphase ist beendet.'); checkBetState(); return; }
-  syncFromStorage(); // ensure we have latest state before writing
+
+  // re-read fresh before writing
+  const freshCodes = getCodes();
+  const freshBets  = getBets();
+
+  if (!((_code) in freshCodes) || freshCodes[_code].used) {
+    alert('Fehler: Code ungültig oder bereits verwendet.'); return;
+  }
+
   _submitLock = true;
-  // debounce
   const btn = document.querySelector('#submit-wrap .btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert…'; }
 
   setTimeout(() => {
-    S.participants.push({
+    freshCodes[_code].used = true;
+    freshBets.push({
       id: Date.now(), name: _name, code: _code,
       answers: {..._ans}, score: 0, ts: new Date().toISOString()
     });
-    S.codes[_code].used = true;
-    recalc(); save();
+    CODES = freshCodes;
+    BETS  = freshBets;
+    saveCodes();
+    saveBets();
+    recalc();
     _submitLock = false;
     showStep('step-done');
-  }, 400);
+  }, 300);
 }
 
 function viewMyBet() {
-  const p = S.participants.find(x => x.code === _code);
+  const freshBets = getBets();
+  const p = freshBets.find(x => x.code === _code);
   if (!p) { showStep('step-done'); return; }
-  const ans = S.correctAnswers;
+  const ans = CFG.correctAnswers;
   const hasResults = Object.keys(ans).length > 0;
-  document.getElementById('mybet-container').innerHTML = S.questions.map(q => {
+  document.getElementById('mybet-container').innerHTML = CFG.questions.map(q => {
     const myAns = p.answers[q.id] || '–';
     const correct = ans[q.id];
     let cls = '';
@@ -933,20 +912,22 @@ function viewMyBet() {
 //  SCORING
 // ══════════════════════════════════
 function recalc() {
-  S.participants.forEach(p => {
-    p.score = Object.keys(S.correctAnswers)
-      .filter(k => p.answers[k] === S.correctAnswers[k]).length;
+  BETS = getBets();
+  BETS.forEach(p => {
+    p.score = Object.keys(CFG.correctAnswers)
+      .filter(k => p.answers[k] === CFG.correctAnswers[k]).length;
   });
-  save();
+  saveBets();
 }
 
 // ══════════════════════════════════
 //  LEADERBOARD
 // ══════════════════════════════════
 function renderLeaderboard() {
-  const sorted = [...S.participants].sort((a,b) => b.score-a.score);
-  const pot = S.participants.length * S.ticketPrice;
-  const ans = Object.keys(S.correctAnswers).length;
+  const bets   = getBets();
+  const sorted = [...bets].sort((a,b) => b.score-a.score);
+  const pot    = bets.length * CFG.ticketPrice;
+  const ans    = Object.keys(CFG.correctAnswers).length;
 
   document.getElementById('lb-count').textContent = sorted.length + ' Teilnehmer';
 
@@ -960,7 +941,7 @@ function renderLeaderboard() {
 
   const c = document.getElementById('lb-container');
   if (!sorted.length) {
-    c.innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--ink3);font-size:0.84rem;">Noch keine Teilnehmer</div>';
+    c.innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--ink3);font-size:0.85rem;">Noch keine Teilnehmer</div>';
     return;
   }
   const medals = ['🥇','🥈','🥉'];
@@ -969,12 +950,9 @@ function renderLeaderboard() {
       <div class="lb-rank">${medals[i]||(i+1)}</div>
       <div style="flex:1">
         <div class="lb-nm">${p.name}</div>
-        <div class="lb-sub">${p.score} von ${ans||S.questions.length} Punkten</div>
+        <div class="lb-sub">${p.score} von ${ans||CFG.questions.length} Punkten</div>
       </div>
-      <div>
-        <div class="lb-pts">${p.score}</div>
-        <div class="lb-pts-lbl">Pkt.</div>
-      </div>
+      <div><div class="lb-pts">${p.score}</div><div class="lb-pts-lbl">Pkt.</div></div>
     </div>`).join('');
 }
 
@@ -985,8 +963,7 @@ let admIn = false;
 let admTimeout = null;
 
 function admLogin() {
-  const pw = document.getElementById('adm-pw').value;
-  if (pw === S.adminPw) {
+  if (document.getElementById('adm-pw').value === CFG.adminPw) {
     admIn = true;
     document.getElementById('adm-login').classList.add('hidden');
     document.getElementById('adm-dash').classList.remove('hidden');
@@ -1007,69 +984,66 @@ function admLogout() {
 
 function resetAdmTimeout() {
   if (admTimeout) clearTimeout(admTimeout);
-  admTimeout = setTimeout(() => { if (admIn) { admLogout(); alert('Admin-Session abgelaufen.'); } }, 30 * 60 * 1000);
+  admTimeout = setTimeout(() => { if(admIn){ admLogout(); alert('Session abgelaufen.'); } }, 30*60*1000);
 }
-document.addEventListener('click', () => { if (admIn) resetAdmTimeout(); });
+document.addEventListener('click', () => { if(admIn) resetAdmTimeout(); });
 
 function renderDash() {
-  const used = Object.values(S.codes).filter(c => c.used).length;
-  const total = Object.keys(S.codes).length;
-  document.getElementById('s-p').textContent = S.participants.length;
-  document.getElementById('s-c').textContent = used + '/' + total;
-  document.getElementById('s-pot').textContent = (S.participants.length * S.ticketPrice) + '€';
-  document.getElementById('s-rate').textContent = total ? Math.round(S.participants.length/total*100)+'%' : '0%';
+  const codes = getCodes();
+  const bets  = getBets();
+  const used  = Object.values(codes).filter(c => c.used).length;
+  const total = Object.keys(codes).length;
 
-  const ans = Object.keys(S.correctAnswers).length;
-  if (S.participants.length && ans) {
-    const avg = (S.participants.reduce((a,p)=>a+p.score,0)/S.participants.length).toFixed(1);
-    document.getElementById('s-avg').textContent = avg;
+  document.getElementById('s-p').textContent   = bets.length;
+  document.getElementById('s-c').textContent   = used+'/'+total;
+  document.getElementById('s-pot').textContent = (bets.length * CFG.ticketPrice)+'€';
+  document.getElementById('s-rate').textContent= total ? Math.round(bets.length/total*100)+'%' : '0%';
+
+  const ans = Object.keys(CFG.correctAnswers).length;
+  if (bets.length && ans) {
+    document.getElementById('s-avg').textContent = (bets.reduce((a,p)=>a+p.score,0)/bets.length).toFixed(1);
   } else {
     document.getElementById('s-avg').textContent = '–';
   }
 
   const statusEl = document.getElementById('s-status');
-  if (isOpen()) statusEl.innerHTML = '<span class="pill pill-green"><span class="pill-dot"></span>Offen</span>';
-  else statusEl.innerHTML = '<span class="pill pill-red"><span class="pill-dot"></span>Geschlossen</span>';
+  statusEl.innerHTML = isOpen()
+    ? '<span class="pill pill-green"><span class="pill-dot"></span>Offen</span>'
+    : '<span class="pill pill-red"><span class="pill-dot"></span>Geschlossen</span>';
 
-  document.getElementById('s-title').value = S.title;
-  document.getElementById('s-price').value = S.ticketPrice;
-  document.getElementById('dl-date').value = S.deadline.date || '';
-  document.getElementById('dl-time').value = S.deadline.time || '';
-  document.getElementById('dl-mode').value = S.deadline.mode || 'open';
+  document.getElementById('s-title').value  = CFG.title;
+  document.getElementById('s-price').value  = CFG.ticketPrice;
+  document.getElementById('dl-date').value  = CFG.deadline.date || '';
+  document.getElementById('dl-time').value  = CFG.deadline.time || '';
+  document.getElementById('dl-mode').value  = CFG.deadline.mode || 'open';
 
-  renderQEditor();
-  renderAnsEditor();
-  renderCodesGrid();
-  renderPtList();
-  renderQAnalysis();
+  renderQEditor(); renderAnsEditor(); renderCodesGrid(); renderPtList(); renderQAnalysis();
 }
 
 function saveDeadline() {
-  S.deadline.date = document.getElementById('dl-date').value;
-  S.deadline.time = document.getElementById('dl-time').value;
-  S.deadline.mode = document.getElementById('dl-mode').value;
-  save();
-  updateBanner();
-  startCountdown();
-  const el = document.getElementById('dl-status');
-  el.innerHTML = `<div class="alert alert-success">Deadline gespeichert. Status: ${isOpen()?'<strong>Offen</strong>':'<strong>Geschlossen</strong>'}</div>`;
+  CFG.deadline.date = document.getElementById('dl-date').value;
+  CFG.deadline.time = document.getElementById('dl-time').value;
+  CFG.deadline.mode = document.getElementById('dl-mode').value;
+  saveCfg(); updateBanner(); startCountdown();
+  document.getElementById('dl-status').innerHTML =
+    `<div class="alert alert-success">Gespeichert. Status: <strong>${isOpen()?'Offen':'Geschlossen'}</strong></div>`;
   renderDash();
 }
 
 function saveSettings() {
-  S.title = document.getElementById('s-title').value.trim() || S.title;
-  const pw = document.getElementById('s-pw').value;
-  if (pw && pw.length >= 4) S.adminPw = pw;
-  else if (pw) { alert('Passwort muss min. 4 Zeichen haben.'); return; }
-  S.ticketPrice = parseInt(document.getElementById('s-price').value) || S.ticketPrice;
-  save();
-  document.getElementById('hdr-title').textContent = S.title;
-  alert('✓ Einstellungen gespeichert.');
-  renderDash();
+  CFG.title = document.getElementById('s-title').value.trim() || CFG.title;
+  const pw  = document.getElementById('s-pw').value;
+  if (pw && pw.length >= 4) CFG.adminPw = pw;
+  else if (pw) { alert('Passwort min. 4 Zeichen.'); return; }
+  CFG.ticketPrice = parseInt(document.getElementById('s-price').value) || CFG.ticketPrice;
+  saveCfg();
+  document.getElementById('hdr-title').textContent = CFG.title;
+  document.title = CFG.title;
+  alert('✓ Gespeichert.');
 }
 
 function renderQEditor() {
-  document.getElementById('q-editor').innerHTML = S.questions.map((q,i) => `
+  document.getElementById('q-editor').innerHTML = CFG.questions.map((q,i) => `
     <div class="qe-row">
       <div class="qe-lbl">Frage ${i+1}</div>
       <input class="fi" id="qe-t-${q.id}" value="${esc(q.text)}" placeholder="Fragetext">
@@ -1081,7 +1055,7 @@ function renderQEditor() {
 }
 
 function saveQuestions() {
-  S.questions.forEach(q => {
+  CFG.questions.forEach(q => {
     const t = document.getElementById('qe-t-'+q.id);
     if (t) q.text = t.value.trim() || q.text;
     q.options = q.options.map((o,oi) => {
@@ -1089,43 +1063,111 @@ function saveQuestions() {
       return e ? (e.value.trim() || o) : o;
     });
   });
-  save(); renderAnsEditor(); renderQAnalysis();
+  saveCfg(); renderAnsEditor(); renderQAnalysis();
   alert('✓ Fragen gespeichert.');
 }
 
 function renderAnsEditor() {
-  document.getElementById('ans-editor').innerHTML = S.questions.map(q => `
+  document.getElementById('ans-editor').innerHTML = CFG.questions.map(q => `
     <div class="ans-row">
       <div class="ans-q">${q.text}</div>
       <select class="ans-sel" id="ae-${q.id}">
         <option value="">– offen –</option>
-        ${q.options.map(o => `<option value="${esc(o)}" ${S.correctAnswers[q.id]===o?'selected':''}>${o}</option>`).join('')}
+        ${q.options.map(o => `<option value="${esc(o)}" ${CFG.correctAnswers[q.id]===o?'selected':''}>${o}</option>`).join('')}
       </select>
     </div>`).join('');
 }
 
 function saveAnswers() {
-  S.questions.forEach(q => {
+  CFG.questions.forEach(q => {
     const s = document.getElementById('ae-'+q.id);
-    if (s && s.value) S.correctAnswers[q.id] = s.value;
+    if (s && s.value) CFG.correctAnswers[q.id] = s.value;
   });
-  recalc(); save(); renderDash();
-  alert('✓ Auswertung gespeichert. Leaderboard aktualisiert.');
+  saveCfg(); recalc(); renderDash();
+  alert('✓ Auswertung gespeichert.');
+}
+
+// ── CODES ──
+function genCodes() {
+  const n   = parseInt(document.getElementById('gen-n')?.value) || 150;
+  const ch  = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const cur = getCodes();
+  let added = 0;
+  for (let i = 0; i < n; i++) {
+    let c, t = 0;
+    do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
+    while (cur[c] !== undefined && t < 100);
+    if (cur[c] === undefined) { cur[c] = {used:false}; added++; }
+  }
+  CODES = cur;
+  saveCodes();
+  renderCodesGrid();
+  alert(`✓ ${added} Codes generiert.`);
 }
 
 function renderCodesGrid() {
-  const all = Object.entries(S.codes);
-  const av = all.filter(([,v])=>!v.used).length;
-  const us = all.filter(([,v])=>v.used).length;
+  const codes = getCodes();
+  const all   = Object.entries(codes);
+  const av    = all.filter(([,v])=>!v.used).length;
+  const us    = all.filter(([,v])=> v.used).length;
   document.getElementById('c-avail').textContent = av + ' verfügbar';
-  document.getElementById('c-used').textContent = us + ' verwendet';
+  document.getElementById('c-used').textContent  = us + ' verwendet';
   document.getElementById('codes-grid').innerHTML = all.map(([c,v]) =>
     `<div class="cc ${v.used?'used':'free'}">${c}</div>`).join('');
 }
 
+function exportCodes() {
+  const lines = Object.entries(getCodes()).filter(([,v])=>!v.used).map(([k])=>k);
+  dlFile(lines.join('
+'), 'jawort-casino-codes.txt', 'text/plain');
+}
+
+function exportCSV() {
+  const bets = getBets();
+  const rows = [['Code','Status','Teilnehmer']];
+  Object.entries(getCodes()).forEach(([c,v]) => {
+    const p = bets.find(x => x.code===c);
+    rows.push([c, v.used?'Verwendet':'Verfügbar', p?p.name:'']);
+  });
+  dlFile(rows.map(r=>r.join(',')).join('
+'), 'codes.csv', 'text/csv');
+}
+
+function exportParticipantsCSV() {
+  const bets = getBets();
+  const ans  = Object.keys(CFG.correctAnswers).length;
+  const rows = [['Name','Code','Punkte','Zeitpunkt']];
+  [...bets].sort((a,b)=>b.score-a.score).forEach(p =>
+    rows.push([p.name, p.code, p.score+'/'+(ans||CFG.questions.length), fmtTime(p.ts)]));
+  dlFile(rows.map(r=>r.join(',')).join('
+'), 'teilnehmer.csv', 'text/csv');
+}
+
+function resetCodePrompt() {
+  const code = document.getElementById('reset-code-input').value.trim().toUpperCase();
+  if (!code) { alert('Code eingeben.'); return; }
+  const codes = getCodes();
+  if (!(code in codes)) { alert('Code nicht gefunden.'); return; }
+  if (!codes[code].used) { alert('Code wurde noch nicht verwendet.'); return; }
+  const bets = getBets();
+  const p = bets.find(x => x.code === code);
+  openModal(
+    'Code zurücksetzen',
+    `Code <strong>${code}</strong>${p?' ('+p.name+')':''} zurücksetzen?`,
+    () => {
+      const c2 = getCodes(); c2[code].used = false; CODES = c2; saveCodes();
+      const b2 = getBets().filter(x => x.code !== code); BETS = b2; saveBets();
+      recalc(); renderDash();
+      document.getElementById('reset-code-input').value = '';
+      alert('✓ Code zurückgesetzt.');
+    }
+  );
+}
+
 function renderPtList() {
-  const sorted = [...S.participants].sort((a,b) => b.score-a.score);
-  const ans = Object.keys(S.correctAnswers).length;
+  const bets   = getBets();
+  const sorted = [...bets].sort((a,b) => b.score-a.score);
+  const ans    = Object.keys(CFG.correctAnswers).length;
   document.getElementById('pt-list').innerHTML = sorted.length
     ? sorted.map((p,i) => `
       <div class="pt-row">
@@ -1134,117 +1176,60 @@ function renderPtList() {
           <div class="pt-nm">${p.name}</div>
           <div class="pt-sub">${p.code} · ${fmtTime(p.ts)}</div>
         </div>
-        <div class="pt-score">${p.score}/${ans||S.questions.length}</div>
+        <div class="pt-score">${p.score}/${ans||CFG.questions.length}</div>
       </div>`).join('')
     : '<p class="caption" style="text-align:center;padding:16px 0;">Noch keine Teilnehmer</p>';
 }
 
 function renderQAnalysis() {
+  const bets = getBets();
   const c = document.getElementById('q-analysis');
-  if (!S.participants.length) {
-    c.innerHTML = '<p class="caption">Noch keine Daten.</p>';
-    return;
-  }
-  c.innerHTML = S.questions.map(q => {
-    const total = S.participants.length;
-    const correct = S.correctAnswers[q.id];
+  if (!bets.length) { c.innerHTML = '<p class="caption">Noch keine Daten.</p>'; return; }
+  c.innerHTML = CFG.questions.map(q => {
+    const total = bets.length;
+    const correct = CFG.correctAnswers[q.id];
     const counts = {};
     q.options.forEach(o => counts[o] = 0);
-    S.participants.forEach(p => { if (p.answers[q.id]) counts[p.answers[q.id]] = (counts[p.answers[q.id]]||0)+1; });
-    const bars = q.options.map(o => {
-      const n = counts[o]||0;
-      const pct = total ? Math.round(n/total*100) : 0;
-      const isC = correct === o;
-      return `<div class="qa-opt ${isC?'qa-correct':''}">
-        <div class="qa-bar-nm">${o}</div>
-        <div class="qa-bar-wrap"><div class="qa-bar-fill" style="width:${pct}%"></div></div>
-        <div class="qa-bar-lbl">${n}</div>
-      </div>`;
-    }).join('');
-    return `<div class="qa-row"><div class="qa-q">${q.text}</div>${bars}</div>`;
+    bets.forEach(p => { if (p.answers[q.id]) counts[p.answers[q.id]] = (counts[p.answers[q.id]]||0)+1; });
+    return `<div class="qa-row"><div class="qa-q">${q.text}</div>` +
+      q.options.map(o => {
+        const n = counts[o]||0;
+        const pct = total ? Math.round(n/total*100) : 0;
+        return `<div class="qa-opt ${correct===o?'qa-correct':''}">
+          <div class="qa-bar-nm">${o}</div>
+          <div class="qa-bar-wrap"><div class="qa-bar-fill" style="width:${pct}%"></div></div>
+          <div class="qa-bar-lbl">${n}</div>
+        </div>`;
+      }).join('') + '</div>';
   }).join('');
-}
-
-// ── CODES ──
-function genCodes(n, silent) {
-  n = n || parseInt(document.getElementById('gen-n')?.value) || 150;
-  const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let added = 0;
-  for (let i = 0; i < n; i++) {
-    let c, t = 0;
-    do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
-    while (S.codes[c] !== undefined && t < 100);
-    if (S.codes[c] === undefined) { S.codes[c] = {used:false}; added++; }
-  }
-  save();
-  if (!silent) { renderCodesGrid(); renderDash(); alert(`✓ ${added} Codes generiert.`); }
-}
-
-function exportCodes() {
-  const lines = Object.entries(S.codes).filter(([,v])=>!v.used).map(([k])=>k);
-  dlFile(lines.join('\n'), 'hochzeit-codes.txt', 'text/plain');
-}
-
-function exportCSV() {
-  const rows = [['Code','Status','Teilnehmer']];
-  Object.entries(S.codes).forEach(([c,v]) => {
-    const p = S.participants.find(x => x.code===c);
-    rows.push([c, v.used?'Verwendet':'Verfügbar', p?p.name:'']);
-  });
-  dlFile(rows.map(r=>r.join(',')).join('\n'), 'codes.csv', 'text/csv');
-}
-
-function exportParticipantsCSV() {
-  const ans = Object.keys(S.correctAnswers).length;
-  const rows = [['Name','Code','Punkte','Zeitpunkt']];
-  [...S.participants].sort((a,b)=>b.score-a.score).forEach(p =>
-    rows.push([p.name, p.code, p.score+'/'+(ans||S.questions.length), fmtTime(p.ts)]));
-  dlFile(rows.map(r=>r.join(',')).join('\n'), 'teilnehmer.csv', 'text/csv');
-}
-
-function resetCodePrompt() {
-  const code = document.getElementById('reset-code-input').value.trim().toUpperCase();
-  if (!code) { alert('Code eingeben.'); return; }
-  if (!S.codes[code]) { alert('Code nicht gefunden.'); return; }
-  if (!S.codes[code].used) { alert('Code wurde noch nicht verwendet.'); return; }
-  const p = S.participants.find(x => x.code === code);
-  openModal(
-    'Code zurücksetzen',
-    `Code <strong>${code}</strong>${p?' ('+p.name+')':''} zurücksetzen? Die Wette wird gelöscht und der Code kann neu eingelöst werden.`,
-    () => {
-      S.codes[code].used = false;
-      S.participants = S.participants.filter(x => x.code !== code);
-      recalc(); save(); renderDash();
-      document.getElementById('reset-code-input').value = '';
-      alert('✓ Code zurückgesetzt.');
-    }
-  );
 }
 
 // ── DANGER ZONE ──
 function confirmReset(type) {
   const msgs = {
-    participants: 'Alle Wetten und Teilnehmer löschen? Codes bleiben erhalten.',
-    codes: 'Alle Codes löschen? Wetten bleiben erhalten.',
-    all: 'KOMPLETTEN Reset durchführen? Alle Daten werden geloescht!'
+    participants: 'Alle Wetten löschen? Codes bleiben erhalten.',
+    codes:        'Alle Codes löschen?',
+    all:          'Komplett-Reset? Alle Daten werden gelöscht!'
   };
-  openModal('Bestaetigung erforderlich', msgs[type], () => {
+  openModal('Bestätigung', msgs[type], () => {
     if (type === 'all') {
-      const pw = S.adminPw;
-      S = defaultState();
-      S.adminPw = pw;
-      S.initialized = true; // keep flag so auto-init doesnt re-run
+      localStorage.removeItem(KEY_CODES);
+      localStorage.removeItem(KEY_BETS);
+      CFG.correctAnswers = {};
+      saveCfg();
+      CODES = {}; BETS = [];
     } else if (type === 'participants') {
-      S.participants = [];
-      S.correctAnswers = {};
-      Object.keys(S.codes).forEach(k => S.codes[k].used = false);
+      BETS = []; saveBets();
+      const c = getCodes();
+      Object.keys(c).forEach(k => c[k].used = false);
+      CODES = c; saveCodes();
+      CFG.correctAnswers = {}; saveCfg();
     } else if (type === 'codes') {
-      S.codes = {};
-      S.initialized = true; // keep flag so auto-init doesnt re-run
+      localStorage.removeItem(KEY_CODES);
+      CODES = {};
     }
-    save();
     renderDash();
-    alert('Erfolgreich zurueckgesetzt.');
+    alert('✓ Zurückgesetzt.');
   });
 }
 
@@ -1252,7 +1237,7 @@ function confirmReset(type) {
 let _modalCb = null;
 function openModal(title, text, cb) {
   document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-text').innerHTML = text;
+  document.getElementById('modal-text').innerHTML    = text;
   _modalCb = cb;
   document.getElementById('modal').classList.remove('hidden');
   document.getElementById('modal-confirm').onclick = () => { closeModal(); if(_modalCb)_modalCb(); };
