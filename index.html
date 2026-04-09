@@ -6,1344 +6,377 @@
 <title>Jawort-Casino</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:       #F9F8F6;
-  --surface:  #FFFFFF;
-  --border:   #E8E4DF;
-  --border2:  #D4CFC8;
-  --ink:      #1A1916;
-  --ink2:     #3D3B37;
-  --ink3:     #6B6860;
-  --accent:   #2D5BFF;
-  --accent-s: rgba(45,91,255,0.08);
-  --green:    #1A8C5A;
-  --green-s:  rgba(26,140,90,0.08);
-  --red:      #C0392B;
-  --red-s:    rgba(192,57,43,0.08);
-  --amber:    #D97706;
-  --amber-s:  rgba(217,119,6,0.1);
-  --radius:   10px;
-  --r-sm:     6px;
-  --shadow:   0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-  --shadow-lg:0 2px 8px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.08);
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:15px;}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
-
-/* ── HEADER ── */
+:root{--bg:#F9F8F6;--sur:#fff;--brd:#E8E4DF;--brd2:#D4CFC8;--ink:#1A1916;--ink2:#3D3B37;--ink3:#6B6860;--acc:#2D5BFF;--as:rgba(45,91,255,.08);--grn:#1A8C5A;--gs:rgba(26,140,90,.08);--red:#C0392B;--rs:rgba(192,57,43,.08);--amb:#D97706;--r:10px;--rsm:6px;}
+*{box-sizing:border-box;margin:0;padding:0;}html{font-size:15px;}
+body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased;}
 .hdr{background:var(--ink);padding:0 20px;}
-.hdr-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;}
-.hdr-brand{display:flex;align-items:baseline;gap:8px;}
-.hdr-title{font-family:'Instrument Serif',serif;font-size:1rem;color:rgba(255,255,255,0.5);letter-spacing:0.2px;}
-.hdr-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-bottom:2px;opacity:0.6;}
+.hdr-i{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px;}
+.hdr-b{font-family:"Instrument Serif",serif;font-size:1rem;color:rgba(255,255,255,.5);}
 .hdr-nav{display:flex;gap:2px;}
-.hdr-tab{padding:7px 13px;border-radius:var(--r-sm);font-size:0.75rem;font-weight:500;color:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.15s;border:none;background:none;}
-.hdr-tab:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);}
-.hdr-tab.active{background:rgba(255,255,255,0.12);color:white;}
-
-/* ── HERO ── */
-.hero{background:var(--ink);padding:28px 20px 32px;text-align:center;position:relative;overflow:hidden;}
-.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent);}
-.hero-eyebrow{font-size:0.65rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;}
-.hero-names{font-family:'Instrument Serif',serif;font-size:clamp(2rem,8vw,3rem);color:white;line-height:1;letter-spacing:-1px;}
-.hero-amp{font-family:'Instrument Serif',serif;font-style:italic;color:rgba(255,255,255,0.35);font-size:0.6em;display:inline-block;margin:0 10px;vertical-align:middle;}
-.hero-date{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 14px;border:1px solid rgba(255,255,255,0.1);border-radius:20px;}
-.hero-date-txt{font-size:0.72rem;font-weight:500;letter-spacing:1.5px;color:rgba(255,255,255,0.45);}
-.hero-date-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.2);}
-
-/* ── DEADLINE BANNER ── */
-.deadline-banner{background:var(--amber);padding:9px 20px;text-align:center;font-size:0.78rem;font-weight:500;color:white;display:none;}
-.deadline-banner.show{display:block;}
-.deadline-banner.closed{background:var(--red);}
-.deadline-banner.open{background:var(--green);}
-
-/* ── LAYOUT ── */
+.tab{padding:7px 13px;border-radius:var(--rsm);font-size:.75rem;font-weight:500;color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;background:none;border:none;}
+.tab:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);}
+.tab.on{background:rgba(255,255,255,.12);color:#fff;}
+.hero{background:var(--ink);padding:28px 20px 32px;text-align:center;}
+.hero-ey{font-size:.65rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:14px;}
+.hero-nm{font-family:"Instrument Serif",serif;font-size:clamp(2rem,8vw,3rem);color:#fff;line-height:1;letter-spacing:-1px;}
+.hero-amp{font-style:italic;color:rgba(255,255,255,.35);font-size:.6em;display:inline-block;margin:0 10px;vertical-align:middle;}
+.hero-date{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:6px 14px;border:1px solid rgba(255,255,255,.1);border-radius:20px;}
+.hdt{font-size:.72rem;font-weight:500;letter-spacing:1.5px;color:rgba(255,255,255,.45);}
+.hdd{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);}
+.bnr{padding:9px 20px;text-align:center;font-size:.78rem;font-weight:500;color:#fff;display:none;}
+.bnr.show{display:block;}.bnr.open{background:var(--grn);}.bnr.closed{background:var(--red);}.bnr.warn{background:var(--amb);}
 .wrap{max-width:560px;margin:0 auto;padding:28px 16px 80px;}
-.page{display:none;animation:fadeIn 0.2s ease both;}
-.page.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-/* ── TYPOGRAPHY ── */
-.serif{font-family:'Instrument Serif',serif;}
-.h1{font-family:'Instrument Serif',serif;font-size:2rem;color:var(--ink);letter-spacing:-0.5px;line-height:1.2;}
-.h2{font-family:'Instrument Serif',serif;font-size:1.3rem;color:var(--ink);letter-spacing:-0.2px;}
-.label{font-size:0.7rem;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;color:var(--ink3);}
-.caption{font-size:0.78rem;color:var(--ink3);line-height:1.6;}
-
-/* ── CARD ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;box-shadow:var(--shadow);}
-.card-sm{padding:14px 16px;}
-
-/* ── PILL BADGE ── */
-.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:500;}
-.pill-blue{background:var(--accent-s);color:var(--accent);}
-.pill-green{background:var(--green-s);color:var(--green);}
-.pill-red{background:var(--red-s);color:var(--red);}
-.pill-amber{background:var(--amber-s);color:var(--amber);}
-.pill-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:var(--r-sm);border:none;font-family:'Inter',sans-serif;font-size:0.82rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
-.btn-full{width:100%;}
-.btn-primary{background:var(--ink);color:white;}
-.btn-primary:hover{background:var(--ink2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
-.btn-primary:active{transform:translateY(0);}
-.btn-accent{background:var(--accent);color:white;}
-.btn-accent:hover{background:#1A4AE8;transform:translateY(-1px);}
-.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--ink2);}
-.btn-ghost:hover{background:var(--bg);border-color:var(--border2);}
-.btn-danger{background:var(--red-s);color:var(--red);border:1px solid rgba(192,57,43,0.2);}
-.btn-danger:hover{background:var(--red);color:white;}
-.btn-success{background:var(--green);color:white;}
-.btn-success:hover{background:#157A4E;}
-.btn-sm{padding:7px 13px;font-size:0.75rem;}
-.btn-xs{padding:5px 10px;font-size:0.7rem;}
-.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none !important;}
-
-/* ── FORM ── */
-.fg{margin-bottom:14px;}
-.fg label{display:block;font-size:0.72rem;font-weight:600;color:var(--ink2);margin-bottom:6px;letter-spacing:0.2px;}
-.fi{width:100%;padding:10px 13px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--ink);outline:none;transition:border-color 0.15s;}
-.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-s);}
-.fi::placeholder{color:var(--ink3);}
-.fi-code{font-family:'Inter',sans-serif;font-size:1.8rem;font-weight:600;letter-spacing:8px;text-align:center;text-transform:uppercase;padding:16px;border:2px solid var(--border2);}
-.fi-code:focus{border-color:var(--accent);}
-
-/* ── ALERTS ── */
-.alert{padding:10px 13px;border-radius:var(--r-sm);font-size:0.8rem;line-height:1.5;margin-bottom:12px;}
-.alert-error{background:var(--red-s);border:1px solid rgba(192,57,43,0.2);color:var(--red);}
-.alert-success{background:var(--green-s);border:1px solid rgba(26,140,90,0.2);color:var(--green);}
-.alert-info{background:var(--accent-s);border:1px solid rgba(45,91,255,0.15);color:var(--accent);}
-.alert-amber{background:var(--amber-s);border:1px solid rgba(217,119,6,0.2);color:var(--amber);}
-.hidden{display:none !important;}
-
-/* ── PROGRESS ── */
-.prog-wrap{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
-.prog-bar{flex:1;height:2px;background:var(--border);border-radius:1px;overflow:hidden;}
-.prog-fill{height:100%;background:var(--accent);border-radius:1px;transition:width 0.3s ease;}
-.prog-lbl{font-size:0.72rem;color:var(--ink3);white-space:nowrap;}
-
-/* ── QUESTION ── */
-.q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:10px;transition:border-color 0.2s,box-shadow 0.2s;}
-.q-card.answered{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-s);}
-.q-num{font-size:0.68rem;font-weight:600;color:var(--ink3);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px;}
-.q-text{font-family:'Instrument Serif',serif;font-size:1.05rem;color:var(--ink);margin-bottom:12px;line-height:1.4;}
+.pg{display:none;}.pg.on{display:block;animation:fu .2s ease both;}
+@keyframes fu{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.h1{font-family:"Instrument Serif",serif;font-size:2rem;color:var(--ink);letter-spacing:-.5px;line-height:1.2;}
+.h2{font-family:"Instrument Serif",serif;font-size:1.3rem;color:var(--ink);}
+.lbl{font-size:.7rem;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--ink3);}
+.cap{font-size:.78rem;color:var(--ink3);line-height:1.6;}
+.card{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:500;}
+.pill-g{background:var(--gs);color:var(--grn);}.pill-r{background:var(--rs);color:var(--red);}
+.pdot{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 20px;border-radius:var(--rsm);border:none;font-family:Inter,sans-serif;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.bw{width:100%;}.bp{background:var(--ink);color:#fff;}.bp:hover{background:var(--ink2);transform:translateY(-1px);}
+.bg{background:transparent;border:1px solid var(--brd2);color:var(--ink2);}.bg:hover{background:var(--bg);}
+.bsu{background:var(--grn);color:#fff;}.bsu:hover{background:#157A4E;}
+.bsm{padding:7px 13px;font-size:.75rem;}.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.fg{margin-bottom:14px;}.fg label{display:block;font-size:.72rem;font-weight:600;color:var(--ink2);margin-bottom:6px;}
+.fi{width:100%;padding:10px 13px;background:var(--sur);border:1px solid var(--brd2);border-radius:var(--rsm);font-family:Inter,sans-serif;font-size:.9rem;color:var(--ink);outline:none;transition:border-color .15s;}
+.fi:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--as);}.fi::placeholder{color:var(--ink3);}
+.fi-code{font-size:1.8rem;font-weight:600;letter-spacing:8px;text-align:center;text-transform:uppercase;padding:16px;border-width:2px;}
+.al{padding:10px 13px;border-radius:var(--rsm);font-size:.8rem;line-height:1.5;margin-bottom:12px;}
+.al-e{background:var(--rs);border:1px solid rgba(192,57,43,.2);color:var(--red);}
+.al-s{background:var(--gs);border:1px solid rgba(26,140,90,.2);color:var(--grn);}
+.al-i{background:var(--as);border:1px solid rgba(45,91,255,.15);color:var(--acc);}
+.prw{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.prb{flex:1;height:2px;background:var(--brd);border-radius:1px;overflow:hidden;}
+.prf{height:100%;background:var(--acc);border-radius:1px;transition:width .3s;}
+.prl{font-size:.72rem;color:var(--ink3);white-space:nowrap;}
+.pchip{display:inline-flex;align-items:center;gap:9px;padding:8px 12px;background:var(--bg);border:1px solid var(--brd);border-radius:var(--rsm);margin-bottom:16px;}
+.pav{width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;}
+.qc{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);padding:16px;margin-bottom:10px;transition:border-color .2s,box-shadow .2s;}
+.qc.ans{border-color:var(--acc);box-shadow:0 0 0 3px var(--as);}
+.qn{font-size:.68rem;font-weight:600;color:var(--ink3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.qt{font-family:"Instrument Serif",serif;font-size:1.05rem;color:var(--ink);margin-bottom:12px;line-height:1.4;}
 .opts{display:flex;flex-wrap:wrap;gap:7px;}
-.opt{padding:8px 14px;border-radius:var(--r-sm);border:1px solid var(--border2);background:var(--bg);color:var(--ink2);font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;cursor:pointer;transition:all 0.15s;}
-.opt:hover{border-color:var(--accent);background:var(--accent-s);color:var(--accent);}
-.opt.sel{background:var(--accent);border-color:var(--accent);color:white;}
-
-/* ── PLAYER BADGE ── */
-.player-chip{display:inline-flex;align-items:center;gap:9px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:16px;}
-.player-av{width:28px;height:28px;border-radius:50%;background:var(--ink);color:white;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;}
-.player-nm{font-size:0.82rem;font-weight:600;color:var(--ink);}
-.player-cd{font-size:0.7rem;color:var(--ink3);font-family:'Inter',sans-serif;}
-
-/* ── DONE ── */
+.opt{padding:8px 14px;border-radius:var(--rsm);border:1px solid var(--brd2);background:var(--bg);color:var(--ink2);font-family:Inter,sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.opt:hover{border-color:var(--acc);background:var(--as);color:var(--acc);}
+.opt.sel{background:var(--acc);border-color:var(--acc);color:#fff;}
 .done{text-align:center;padding:48px 16px;}
-.done-icon{font-size:3rem;display:block;margin-bottom:16px;animation:pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275) both;}
+.di{font-size:3rem;display:block;margin-bottom:16px;animation:pop .4s cubic-bezier(.175,.885,.32,1.275) both;}
 @keyframes pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-.done h2{font-family:'Instrument Serif',serif;font-size:1.7rem;margin-bottom:8px;}
-.done p{font-size:0.85rem;color:var(--ink3);max-width:260px;margin:0 auto 24px;line-height:1.7;}
-
-/* ── CLOSED ── */
-.closed-screen{text-align:center;padding:48px 16px;}
-.closed-screen .icon{font-size:2.5rem;display:block;margin-bottom:14px;}
-.closed-screen h2{font-family:'Instrument Serif',serif;font-size:1.6rem;margin-bottom:8px;color:var(--ink);}
-.closed-screen p{font-size:0.84rem;color:var(--ink3);max-width:260px;margin:0 auto;line-height:1.7;}
-
-/* ── COUNTDOWN ── */
-.countdown{display:flex;gap:10px;justify-content:center;margin:16px 0;}
-.cd-unit{text-align:center;min-width:52px;}
-.cd-num{font-family:'Instrument Serif',serif;font-size:2rem;color:var(--ink);line-height:1;display:block;}
-.cd-lbl{font-size:0.62rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink3);margin-top:2px;}
-.cd-sep{font-family:'Instrument Serif',serif;font-size:2rem;color:var(--border2);align-self:center;margin-top:-4px;}
-
-/* ── LEADERBOARD ── */
-.pot-card{background:var(--ink);border-radius:var(--radius);padding:20px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden;}
-.pot-card::after{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:rgba(45,91,255,0.15);}
-.pot-label{font-size:0.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:4px;}
-.pot-amount{font-family:'Instrument Serif',serif;font-size:2.8rem;color:white;line-height:1;}
-.pot-split{display:flex;justify-content:center;gap:24px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.1);}
-.pot-split-item{text-align:center;}
-.pot-split-amt{font-family:'Instrument Serif',serif;font-size:1.1rem;color:rgba(255,255,255,0.85);}
-.pot-split-lbl{font-size:0.62rem;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-.lb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.lb-entry{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);margin-bottom:7px;transition:all 0.15s;animation:slideIn 0.25s ease both;}
-@keyframes slideIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:translateX(0);}}
-.lb-entry:first-child{border-color:var(--accent);background:var(--accent-s);}
-.lb-rank{font-family:'Instrument Serif',serif;font-size:1.1rem;color:var(--ink3);min-width:22px;}
-.lb-entry:first-child .lb-rank{color:var(--accent);}
-.lb-nm{flex:1;font-size:0.88rem;font-weight:500;}
-.lb-sub{font-size:0.7rem;color:var(--ink3);}
-.lb-pts{font-family:'Instrument Serif',serif;font-size:1.2rem;color:var(--ink);font-weight:400;}
-.lb-entry:first-child .lb-pts{color:var(--accent);}
-.lb-pts-lbl{font-size:0.62rem;color:var(--ink3);text-align:right;}
-.live-row{display:flex;align-items:center;gap:6px;}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
-/* ── ADMIN ── */
-.admin-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
-.admin-hdr h2{font-family:'Instrument Serif',serif;font-size:1.4rem;}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.stat-cell{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:13px 10px;text-align:center;}
-.stat-n{font-family:'Instrument Serif',serif;font-size:1.6rem;color:var(--ink);}
-.stat-l{font-size:0.62rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink3);margin-top:2px;}
-
-/* admin sections */
-.sec{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;transition:background 0.15s;}
-.sec-hd:hover{background:var(--bg);}
-.sec-hd-left{display:flex;align-items:center;gap:9px;font-size:0.8rem;font-weight:600;color:var(--ink2);}
-.sec-chevron{color:var(--ink3);font-size:0.65rem;transition:transform 0.2s;}
-.sec.open .sec-chevron{transform:rotate(180deg);}
-.sec-bd{display:none;padding:0 16px 16px;border-top:1px solid var(--border);}
-.sec.open .sec-bd{display:block;}
-
-/* question editor */
-.qe-row{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;margin:10px 0;}
-.qe-lbl{font-size:0.65rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:7px;}
-.qe-row .fi{margin-bottom:7px;font-size:0.85rem;padding:8px 10px;}
-.opts-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.opts-2 .fi{margin-bottom:0;font-size:0.78rem;padding:8px 9px;}
-
-/* answer rows */
-.ans-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.ans-row:last-child{border-bottom:none;}
-.ans-q{flex:1;font-size:0.83rem;color:var(--ink2);line-height:1.3;}
-.ans-sel{padding:7px 10px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r-sm);font-family:'Inter',sans-serif;font-size:0.78rem;color:var(--ink);min-width:130px;outline:none;}
-
-/* codes */
-.codes-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-height:220px;overflow-y:auto;}
-.cc{padding:5px 2px;border-radius:4px;font-size:0.58rem;font-family:monospace;text-align:center;letter-spacing:0.5px;font-weight:700;}
-.cc.free{background:var(--green-s);border:1px solid rgba(26,140,90,0.2);color:var(--green);}
-.cc.used{background:var(--red-s);border:1px solid rgba(192,57,43,0.15);color:var(--red);}
-
-/* participant list */
-.pt-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
-.pt-row:last-child{border-bottom:none;}
-.pt-rank{font-family:'Instrument Serif',serif;font-size:1rem;color:var(--ink3);min-width:20px;}
-.pt-nm{flex:1;font-size:0.83rem;font-weight:500;}
-.pt-sub{font-size:0.68rem;color:var(--ink3);}
-.pt-score{font-family:'Instrument Serif',serif;font-size:1rem;color:var(--accent);}
-
-/* question analysis */
-.qa-row{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);}
-.qa-row:last-child{border-bottom:none;}
-.qa-q{font-size:0.83rem;font-weight:600;margin-bottom:8px;}
-.qa-opt{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
-.qa-bar-wrap{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
-.qa-bar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.4s;}
-.qa-bar-lbl{font-size:0.7rem;color:var(--ink3);min-width:28px;text-align:right;}
-.qa-bar-nm{font-size:0.75rem;color:var(--ink2);min-width:100px;}
-.qa-correct .qa-bar-fill{background:var(--green);}
-.qa-correct .qa-bar-nm{color:var(--green);font-weight:600;}
-
-/* deadline editor */
-.deadline-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-
-/* reset code modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
-.modal{background:var(--surface);border-radius:var(--radius);padding:24px;max-width:360px;width:100%;box-shadow:var(--shadow-lg);}
-.modal h3{font-family:'Instrument Serif',serif;font-size:1.2rem;margin-bottom:8px;}
-.modal p{font-size:0.83rem;color:var(--ink3);line-height:1.6;margin-bottom:18px;}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
-
-/* my bet view */
-.my-bet-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
-.my-bet-row:last-child{border-bottom:none;}
-.my-bet-q{font-size:0.8rem;color:var(--ink3);flex:1;line-height:1.4;}
-.my-bet-ans{font-size:0.82rem;font-weight:600;color:var(--ink);}
-.my-bet-ans.correct{color:var(--green);}
-.my-bet-ans.wrong{color:var(--red);}
-
-/* divider */
-.divider{height:1px;background:var(--border);margin:16px 0;}
-
-/* scrollbar */
-::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.mbr{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--brd);}
+.mbr:last-child{border-bottom:none;}
+.mbq{font-size:.8rem;color:var(--ink3);flex:1;line-height:1.4;}
+.mba{font-size:.82rem;font-weight:600;color:var(--ink);}
+.mba.ok{color:var(--grn);}.mba.no{color:var(--red);}
+.pot{background:var(--ink);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:14px;}
+.pot-amt{font-family:"Instrument Serif",serif;font-size:2.8rem;color:#fff;line-height:1;}
+.pot-lbl{font-size:.68rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.pot-sp{display:flex;justify-content:center;gap:24px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);}
+.pot-sa{font-family:"Instrument Serif",serif;font-size:1.1rem;color:rgba(255,255,255,.85);}
+.pot-sl{font-size:.62rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.lbh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.lbe{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--sur);border:1px solid var(--brd);border-radius:var(--rsm);margin-bottom:7px;}
+.lbe:first-child{border-color:var(--acc);background:var(--as);}
+.lbr{font-family:"Instrument Serif",serif;font-size:1.1rem;color:var(--ink3);min-width:22px;}
+.lbe:first-child .lbr,.lbe:first-child .lbp{color:var(--acc);}
+.lbn{flex:1;font-size:.88rem;font-weight:500;}
+.lbp{font-family:"Instrument Serif",serif;font-size:1.2rem;color:var(--ink);}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:bl 1.5s infinite;display:inline-block;margin-right:6px;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:.3;}}
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.sc{background:var(--sur);border:1px solid var(--brd);border-radius:var(--rsm);padding:13px 10px;text-align:center;}
+.sn{font-family:"Instrument Serif",serif;font-size:1.6rem;color:var(--ink);}
+.sl{font-size:.62rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3);margin-top:2px;}
+.sec{background:var(--sur);border:1px solid var(--brd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.sch{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;transition:background .15s;}
+.sch:hover{background:var(--bg);}
+.sct{display:flex;align-items:center;gap:9px;font-size:.8rem;font-weight:600;color:var(--ink2);}
+.scv{color:var(--ink3);font-size:.65rem;transition:transform .2s;}
+.sec.op .scv{transform:rotate(180deg);}
+.scb{display:none;padding:0 16px 16px;border-top:1px solid var(--brd);}
+.sec.op .scb{display:block;}
+.qer{background:var(--bg);border:1px solid var(--brd);border-radius:var(--rsm);padding:12px;margin:10px 0;}
+.qel{font-size:.65rem;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink3);margin-bottom:7px;}
+.qer .fi{margin-bottom:7px;font-size:.85rem;padding:8px 10px;}
+.og{display:grid;grid-template-columns:1fr 1fr;gap:6px;}.og .fi{margin-bottom:0;font-size:.78rem;padding:8px 9px;}
+.ar{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--brd);}
+.ar:last-child{border-bottom:none;}
+.aq{flex:1;font-size:.83rem;color:var(--ink2);line-height:1.3;}
+.as{padding:7px 10px;background:var(--bg);border:1px solid var(--brd2);border-radius:var(--rsm);font-family:Inter,sans-serif;font-size:.78rem;color:var(--ink);min-width:130px;outline:none;}
+.cg{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;max-height:220px;overflow-y:auto;margin-top:10px;}
+.cc{padding:5px 2px;border-radius:4px;font-size:.58rem;font-family:monospace;text-align:center;letter-spacing:.5px;font-weight:700;}
+.cc.fr{background:var(--gs);border:1px solid rgba(26,140,90,.2);color:var(--grn);}
+.cc.us{background:var(--rs);border:1px solid rgba(192,57,43,.15);color:var(--red);}
+.ptr{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--brd);}
+.ptr:last-child{border-bottom:none;}
+.qar{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--brd);}
+.qar:last-child{border-bottom:none;}
+.qao{display:flex;align-items:center;gap:9px;margin-bottom:5px;}
+.qabw{flex:1;height:4px;background:var(--brd);border-radius:2px;overflow:hidden;}
+.qabf{height:100%;background:var(--acc);border-radius:2px;transition:width .4s;}
+.qabl{font-size:.7rem;color:var(--ink3);min-width:28px;text-align:right;}
+.qabn{font-size:.75rem;color:var(--ink2);min-width:100px;}
+.qac .qabf{background:var(--grn);}.qac .qabn{color:var(--grn);font-weight:600;}
+.dlg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.dv{height:1px;background:var(--brd);margin:16px 0;}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);}
+.mc{background:var(--sur);border-radius:var(--r);padding:24px;max-width:360px;width:100%;}
+.mc h3{font-family:"Instrument Serif",serif;font-size:1.2rem;margin-bottom:8px;}
+.mc p{font-size:.83rem;color:var(--ink3);line-height:1.6;margin-bottom:18px;}
+.mbt{display:flex;gap:8px;justify-content:flex-end;}
+.hid{display:none!important;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--brd2);border-radius:2px;}
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
 <header class="hdr">
-  <div class="hdr-inner">
-    <div class="hdr-brand">
-      <span class="hdr-title serif" id="hdr-title">Jawort-Casino</span>
-      <div class="hdr-dot"></div>
-    </div>
+  <div class="hdr-i">
+    <div class="hdr-b" id="hdr-title">Jawort-Casino</div>
     <nav class="hdr-nav">
-      <div class="hdr-tab active" data-page="bet" id="tab-bet">Wetten</div>
-      <div class="hdr-tab" data-page="board" id="tab-board">Leaderboard</div>
-      <div class="hdr-tab" data-page="admin" id="tab-admin">Admin</div>
+      <button class="tab on" data-pg="bet">Wetten</button>
+      <button class="tab" data-pg="board">Leaderboard</button>
+      <button class="tab" data-pg="admin">Admin</button>
     </nav>
   </div>
 </header>
-
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-eyebrow">Jawort · Casino</div>
-  <div class="hero-names">
-    Sabrina<span class="hero-amp">&amp;</span>Sven
-  </div>
+  <div class="hero-ey">Jawort &middot; Casino</div>
+  <div class="hero-nm">Sabrina<span class="hero-amp">&amp;</span>Sven</div>
   <div>
     <div class="hero-date">
-      <span class="hero-date-txt">SAMSTAG</span>
-      <div class="hero-date-dot"></div>
-      <span class="hero-date-txt">08. AUGUST 2026</span>
-      <div class="hero-date-dot"></div>
-      <span class="hero-date-txt">LUDWIGSBURG</span>
-      <div class="hero-date-dot"></div>
-      <span class="hero-date-txt" style="opacity:0.45;">v0.05</span>
+      <span class="hdt">SAMSTAG</span><div class="hdd"></div>
+      <span class="hdt">08. AUGUST 2026</span><div class="hdd"></div>
+      <span class="hdt">LUDWIGSBURG</span><div class="hdd"></div>
+      <span class="hdt" style="opacity:.45">v0.06</span>
     </div>
   </div>
 </div>
-
-<!-- DEADLINE BANNER -->
-<div class="deadline-banner" id="deadline-banner"></div>
-
-<!-- CONTENT -->
+<div class="bnr" id="bnr"></div>
 <div class="wrap">
-
-  <!-- ══ BET PAGE ══ -->
-  <div class="page active" id="page-bet">
-
-    <!-- CLOSED STATE -->
-    <div id="bet-closed" class="hidden">
-      <div class="closed-screen">
-        <span class="icon">🔒</span>
-        <h2>Wetten geschlossen</h2>
-        <p>Die Wettphase ist beendet. Die Auswertung folgt live im Leaderboard.</p>
-        <br>
-        <button class="btn btn-ghost" id="btn-goto-board">Zum Leaderboard →</button>
-      </div>
-    </div>
-
-    <!-- CODE STEP -->
-    <div id="step-code">
-      <div style="padding:24px 0 20px;">
-        <div class="label" style="margin-bottom:10px;">Schritt 1 von 3</div>
-        <h1 class="h1" style="margin-bottom:8px;">Dein Code</h1>
-        <p class="caption">Gib den Code ein, den du am Einlass erhalten hast.</p>
-      </div>
-
-      <!-- countdown -->
-      <div id="countdown-wrap" class="card card-sm hidden" style="margin-bottom:16px;text-align:center;">
-        <div class="label" style="margin-bottom:12px;">Wetten schließen in</div>
-        <div class="countdown">
-          <div class="cd-unit"><span class="cd-num" id="cd-h">00</span><div class="cd-lbl">Std</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><div class="cd-lbl">Min</div></div>
-          <div class="cd-sep">:</div>
-          <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><div class="cd-lbl">Sek</div></div>
+  <!-- BET -->
+  <div class="pg on" id="pg-bet">
+    <div id="s-closed" class="hid"><div style="text-align:center;padding:48px 16px;"><div style="font-size:2.5rem;margin-bottom:14px;">&#128274;</div><h2 class="h2" style="margin-bottom:8px;">Wetten geschlossen</h2><p class="cap">Die Wettphase ist beendet.</p><br><button class="btn bg" data-goto="board">Zum Leaderboard</button></div></div>
+    <div id="s-code">
+      <div style="padding:24px 0 20px;"><div class="lbl" style="margin-bottom:10px;">Schritt 1 von 3</div><h1 class="h1" style="margin-bottom:8px;">Dein Code</h1><p class="cap">Gib den Code ein, den du am Einlass erhalten hast.</p></div>
+      <div id="cd-wrap" class="card hid" style="margin-bottom:16px;text-align:center;">
+        <div class="lbl" style="margin-bottom:12px;">Wetten schliessen in</div>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <div style="text-align:center;"><span style="font-family:'Instrument Serif',serif;font-size:2rem;" id="cd-h">00</span><div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;">Std</div></div>
+          <div style="font-family:'Instrument Serif',serif;font-size:2rem;color:var(--brd2);align-self:center;">:</div>
+          <div style="text-align:center;"><span style="font-family:'Instrument Serif',serif;font-size:2rem;" id="cd-m">00</span><div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;">Min</div></div>
+          <div style="font-family:'Instrument Serif',serif;font-size:2rem;color:var(--brd2);align-self:center;">:</div>
+          <div style="text-align:center;"><span style="font-family:'Instrument Serif',serif;font-size:2rem;" id="cd-s">00</span><div style="font-size:.62rem;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;">Sek</div></div>
         </div>
       </div>
-
-      <input type="text" class="fi fi-code" id="code-input" placeholder="······" maxlength="8"
-             oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"
-             onkeydown="if(event.key==='Enter')validateCode()">
-      <div id="code-error" class="alert alert-error hidden" style="margin-top:8px;"></div>
-      <button class="btn btn-primary btn-full" style="margin-top:10px;" id="btn-validate" id="btn-code">Code einlösen</button>
+      <input type="text" class="fi fi-code" id="code-in" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false">
+      <div id="code-err" class="al al-e hid" style="margin-top:8px;"></div>
+      <button class="btn bp bw" id="btn-go" style="margin-top:10px;">Code einloesen &#8594;</button>
     </div>
-
-    <!-- NAME STEP -->
-    <div id="step-name" class="hidden">
-      <div style="padding:16px 0 20px;">
-        <div class="label" style="margin-bottom:10px;">Schritt 2 von 3</div>
-        <h1 class="h1" style="margin-bottom:8px;">Dein Name</h1>
-        <p class="caption">Dein Name erscheint im Live-Leaderboard.</p>
-      </div>
-      <div class="fg">
-        <label>Vor- und Nachname</label>
-        <input type="text" class="fi" id="name-input" placeholder="z.B. Anna Müller" onkeydown="if(event.key==='Enter')startBetting()">
-      </div>
-      <button class="btn btn-primary btn-full" id="btn-start">Weiter →</button>
+    <div id="s-name" class="hid">
+      <div style="padding:16px 0 20px;"><div class="lbl" style="margin-bottom:10px;">Schritt 2 von 3</div><h1 class="h1" style="margin-bottom:8px;">Dein Name</h1><p class="cap">Dein Name erscheint im Live-Leaderboard.</p></div>
+      <div class="fg"><label>Vor- und Nachname</label><input type="text" class="fi" id="name-in" placeholder="z.B. Anna Muller"></div>
+      <button class="btn bp bw" id="btn-next">Weiter &#8594;</button>
     </div>
-
-    <!-- QUESTIONS STEP -->
-    <div id="step-q" class="hidden">
-      <div style="padding:8px 0 14px;display:flex;align-items:center;justify-content:space-between;">
-        <div class="player-chip">
-          <div class="player-av" id="p-av">?</div>
-          <div>
-            <div class="player-nm" id="p-nm">–</div>
-            <div class="player-cd" id="p-cd">–</div>
-          </div>
-        </div>
-      </div>
-      <div class="prog-wrap">
-        <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
-        <div class="prog-lbl" id="prog-lbl">0 / 0</div>
-      </div>
-      <div id="q-container"></div>
-      <div id="submit-wrap" class="hidden" style="margin-top:10px;">
-        <div class="alert alert-success">Alle Antworten gegeben – bereit zum Absenden!</div>
-        <button class="btn btn-success btn-full" id="btn-submit">Wette abgeben 🎯</button>
+    <div id="s-q" class="hid">
+      <div class="pchip"><div class="pav" id="pav">?</div><div><div style="font-size:.82rem;font-weight:600;" id="pnm"></div><div style="font-size:.7rem;color:var(--ink3);" id="pcd"></div></div></div>
+      <div class="prw"><div class="prb"><div class="prf" id="prf" style="width:0%"></div></div><div class="prl" id="prl">0/0</div></div>
+      <div id="q-con"></div>
+      <div id="s-submit" class="hid" style="margin-top:10px;"><div class="al al-s">Alle Antworten gegeben!</div><button class="btn bsu bw" id="btn-submit">Wette abgeben &#127919;</button></div>
+    </div>
+    <div id="s-done" class="hid">
+      <div class="done"><span class="di">&#127881;</span><h2 class="h2" style="margin-bottom:8px;">Wette platziert!</h2><p class="cap" style="max-width:260px;margin:0 auto 24px;">Deine Tipps sind gespeichert.</p>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;"><button class="btn bp" data-goto="board">Leaderboard &#8594;</button><button class="btn bg" id="btn-mybet">Meine Wette</button></div>
       </div>
     </div>
-
-    <!-- DONE STEP -->
-    <div id="step-done" class="hidden">
-      <div class="done">
-        <span class="done-icon">🎉</span>
-        <h2>Wette platziert!</h2>
-        <p>Deine Tipps sind gespeichert. Verfolge den Live-Stand im Leaderboard.</p>
-        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <button class="btn btn-primary" id="btn-goto-board">Leaderboard →</button>
-          <button class="btn btn-ghost" id="btn-mybet">Meine Wette ansehen</button>
-        </div>
-      </div>
+    <div id="s-mybet" class="hid">
+      <div style="padding:12px 0 16px;display:flex;align-items:center;gap:10px;"><button class="btn bg bsm" id="btn-back">&#8592; Zuruck</button><span class="lbl">Deine Tipps</span></div>
+      <div class="card" id="mybet-con"></div>
     </div>
-
-    <!-- MY BET VIEW -->
-    <div id="step-mybet" class="hidden">
-      <div style="padding:12px 0 16px;display:flex;align-items:center;gap:10px;">
-        <button class="btn btn-ghost btn-sm" id="btn-back-done">← Zurück</button>
-        <span class="label">Deine Tipps</span>
-      </div>
-      <div class="card" id="mybet-container"></div>
-    </div>
-
   </div>
-
-  <!-- ══ LEADERBOARD ══ -->
-  <div class="page" id="page-board">
-
-    <div class="pot-card hidden" id="pot-card">
-      <div class="pot-label">Gesamtpot</div>
-      <div class="pot-amount" id="pot-amt">0 €</div>
-      <div class="pot-split">
-        <div class="pot-split-item"><div class="pot-split-amt" id="pot-win">0 €</div><div class="pot-split-lbl">Gewinner</div></div>
-        <div style="width:1px;background:rgba(255,255,255,0.1);"></div>
-        <div class="pot-split-item"><div class="pot-split-amt" id="pot-cpl">0 €</div><div class="pot-split-lbl">Brautpaar</div></div>
-      </div>
+  <!-- BOARD -->
+  <div class="pg" id="pg-board">
+    <div class="pot hid" id="pot-card"><div class="pot-lbl">Gesamtpot</div><div class="pot-amt" id="pot-amt">0 &#8364;</div>
+      <div class="pot-sp"><div><div class="pot-sa" id="pot-win">0 &#8364;</div><div class="pot-sl">Gewinner</div></div><div style="width:1px;background:rgba(255,255,255,.1);"></div><div><div class="pot-sa" id="pot-cpl">0 &#8364;</div><div class="pot-sl">Brautpaar</div></div></div>
     </div>
-
-    <div class="lb-header">
-      <div class="live-row"><div class="live-dot"></div><span class="label">Live-Stand</span></div>
-      <span id="lb-count" class="caption">0 Teilnehmer</span>
-    </div>
-
-    <div id="lb-container">
-      <div class="card" style="text-align:center;padding:40px;color:var(--ink3);font-size:0.85rem;">Noch keine Teilnehmer</div>
-    </div>
-
+    <div class="lbh"><div><span class="ldot"></span><span class="lbl">Live-Stand</span></div><span class="cap" id="lb-cnt">0 Teilnehmer</span></div>
+    <div id="lb-con"><div class="card" style="text-align:center;padding:40px;color:var(--ink3);">Noch keine Teilnehmer</div></div>
   </div>
-
-  <!-- ══ ADMIN ══ -->
-  <div class="page" id="page-admin">
-
+  <!-- ADMIN -->
+  <div class="pg" id="pg-admin">
     <div id="adm-login">
-      <div style="padding:32px 0 20px;text-align:center;">
-        <h2 class="h2" style="margin-bottom:6px;">Admin</h2>
-        <p class="caption">Nur für den Organisator</p>
-      </div>
-      <div class="fg">
-        <label>Passwort</label>
-        <input type="password" class="fi" id="adm-pw" placeholder="••••••••" onkeydown="if(event.key==='Enter')admLogin()">
-      </div>
-      <button class="btn btn-primary btn-full" id="btn-adm-login">Einloggen</button>
-      <div id="adm-pw-err" class="alert alert-error hidden" style="margin-top:10px;"></div>
+      <div style="padding:32px 0 20px;text-align:center;"><h2 class="h2" style="margin-bottom:6px;">Admin</h2><p class="cap">Nur fur den Organisator</p></div>
+      <div class="fg"><label>Passwort</label><input type="password" class="fi" id="adm-pw" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"></div>
+      <button class="btn bp bw" id="btn-adm-login">Einloggen</button>
+      <div id="adm-err" class="al al-e hid" style="margin-top:10px;"></div>
     </div>
-
-    <div id="adm-dash" class="hidden">
-
-      <div class="admin-hdr">
-        <h2 class="h2">Dashboard</h2>
-        <button class="btn btn-ghost btn-sm" id="btn-adm-logout">Abmelden</button>
-      </div>
-
-      <!-- Stats -->
-      <div class="stat-grid">
-        <div class="stat-cell"><div class="stat-n" id="s-p">0</div><div class="stat-l">Teilnehmer</div></div>
-        <div class="stat-cell"><div class="stat-n" id="s-c">0</div><div class="stat-l">Codes</div></div>
-        <div class="stat-cell"><div class="stat-n" id="s-pot">0€</div><div class="stat-l">Im Pot</div></div>
-      </div>
-      <div class="stat-grid" style="margin-bottom:14px;">
-        <div class="stat-cell"><div class="stat-n" id="s-rate">0%</div><div class="stat-l">Teilnahmerate</div></div>
-        <div class="stat-cell"><div class="stat-n" id="s-avg">–</div><div class="stat-l">Ø Punkte</div></div>
-        <div class="stat-cell"><div class="stat-n" id="s-status"><span class="pill pill-green"><span class="pill-dot"></span>Offen</span></div><div class="stat-l">Status</div></div>
-      </div>
-
-      <!-- Deadline -->
-      <div class="sec open">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">⏱️ Wett-Deadline</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <div class="alert alert-info" style="margin-top:12px;">Nach Ablauf der Deadline können keine neuen Wetten mehr abgegeben werden. Bereits abgegebene Wetten bleiben gültig.</div>
-          <div class="deadline-grid" style="margin-top:12px;">
-            <div class="fg">
-              <label>Datum</label>
-              <input type="date" class="fi" id="dl-date">
-            </div>
-            <div class="fg">
-              <label>Uhrzeit</label>
-              <input type="time" class="fi" id="dl-time">
-            </div>
-          </div>
-          <div class="fg">
-            <label>Status</label>
-            <select class="fi" id="dl-mode">
-              <option value="auto">Automatisch (per Datum/Uhrzeit)</option>
-              <option value="open">Manuell OFFEN – Wetten immer möglich</option>
-              <option value="closed">Manuell GESCHLOSSEN – Wetten gesperrt</option>
-            </select>
-          </div>
-          <button class="btn btn-primary btn-full" id="btn-save-deadline">Deadline speichern</button>
-          <div id="dl-status" style="margin-top:10px;"></div>
+    <div id="adm-dash" class="hid">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;"><h2 class="h2">Dashboard</h2><button class="btn bg bsm" id="btn-adm-out">Abmelden</button></div>
+      <div class="sg"><div class="sc"><div class="sn" id="st-p">0</div><div class="sl">Teilnehmer</div></div><div class="sc"><div class="sn" id="st-c">0</div><div class="sl">Codes</div></div><div class="sc"><div class="sn" id="st-pot">0&#8364;</div><div class="sl">Im Pot</div></div></div>
+      <div class="sg"><div class="sc"><div class="sn" id="st-rate">0%</div><div class="sl">Quote</div></div><div class="sc"><div class="sn" id="st-avg">-</div><div class="sl">Avg Pkt</div></div><div class="sc"><div class="sn" id="st-stat"><span class="pill pill-g"><span class="pdot"></span>Offen</span></div><div class="sl">Status</div></div></div>
+      <div class="sec op"><div class="sch" data-sec="dl"><div class="sct">&#9201; Deadline</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><div class="al al-i" style="margin-top:12px;">Nach Ablauf konnen keine neuen Wetten abgegeben werden.</div>
+          <div class="dlg" style="margin-top:12px;"><div class="fg"><label>Datum</label><input type="date" class="fi" id="dl-date"></div><div class="fg"><label>Uhrzeit</label><input type="time" class="fi" id="dl-time"></div></div>
+          <div class="fg"><label>Modus</label><select class="fi" id="dl-mode"><option value="auto">Automatisch</option><option value="open">Manuell OFFEN</option><option value="closed">Manuell GESCHLOSSEN</option></select></div>
+          <button class="btn bp bw" id="btn-dl">Speichern</button><div id="dl-msg" style="margin-top:10px;"></div>
         </div>
       </div>
-
-      <!-- Settings -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">⚙️ Einstellungen</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <div class="fg" style="margin-top:12px;">
-            <label>Titel</label>
-            <input type="text" class="fi" id="s-title">
-          </div>
-          <div class="fg">
-            <label>Neues Passwort (leer = unverändert)</label>
-            <input type="password" class="fi" id="s-pw" placeholder="••••••••">
-          </div>
-          <div class="fg">
-            <label>Ticket-Preis (€)</label>
-            <input type="number" class="fi" id="s-price" min="1" max="100">
-          </div>
-          <button class="btn btn-primary btn-full" id="btn-save-settings">Speichern</button>
+      <div class="sec"><div class="sch" data-sec="st"><div class="sct">&#9881; Einstellungen</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><div class="fg" style="margin-top:12px;"><label>Titel</label><input type="text" class="fi" id="st-title"></div>
+          <div class="fg"><label>Neues Passwort</label><input type="password" class="fi" id="st-pw" placeholder="leer = unverandert"></div>
+          <div class="fg"><label>Ticket-Preis (&#8364;)</label><input type="number" class="fi" id="st-price" min="1" max="100"></div>
+          <button class="btn bp bw" id="btn-st">Speichern</button>
         </div>
       </div>
-
-      <!-- Questions -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">❓ Fragen bearbeiten</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <div id="q-editor"></div>
-          <button class="btn btn-ghost btn-full" id="btn-save-questions" style="margin-top:8px;">Fragen speichern</button>
+      <div class="sec"><div class="sch" data-sec="qe"><div class="sct">&#10067; Fragen</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><div id="q-ed"></div><button class="btn bg bw" id="btn-qs" style="margin-top:8px;">Fragen speichern</button></div>
+      </div>
+      <div class="sec"><div class="sch" data-sec="an"><div class="sct">&#9989; Richtige Antworten</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><div class="al al-i" style="margin-top:12px;">Antworten eintragen &#8594; Leaderboard aktualisiert sich.</div><div id="ans-ed"></div>
+          <button class="btn bsu bw" id="btn-as" style="margin-top:12px;">Auswertung starten &#127942;</button>
         </div>
       </div>
-
-      <!-- Correct Answers -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">✅ Richtige Antworten & Auswertung</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <div class="alert alert-info" style="margin-top:12px;">Antworten eintragen → Punkte werden sofort berechnet. Leaderboard aktualisiert sich live.</div>
-          <div id="ans-editor"></div>
-          <button class="btn btn-success btn-full" id="btn-save-answers" style="margin-top:12px;">Auswertung starten 🏆</button>
-        </div>
+      <div class="sec"><div class="sch" data-sec="az"><div class="sct">&#128202; Analyse</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><div id="qaz" style="padding-top:12px;"></div></div>
       </div>
-
-      <!-- Question Analysis -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">📊 Antwort-Analyse</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <div id="q-analysis" style="padding-top:12px;"></div>
-        </div>
-      </div>
-
-      <!-- Codes -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">🎟️ Codes verwalten</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
+      <div class="sec"><div class="sch" data-sec="cd"><div class="sct">&#127967; Codes</div><span class="scv">&#9660;</span></div>
+        <div class="scb">
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
             <input type="number" class="fi" id="gen-n" value="150" min="1" max="500" style="width:90px;">
-            <button class="btn btn-ghost btn-sm" id="btn-gen-codes">Generieren</button>
-            <button class="btn btn-ghost btn-sm" id="btn-export-codes">Export TXT</button>
-            <button class="btn btn-ghost btn-sm" id="btn-export-csv">Export CSV</button>
+            <button class="btn bg bsm" id="btn-gen">Generieren</button>
+            <button class="btn bg bsm" id="btn-etxt">TXT</button>
+            <button class="btn bg bsm" id="btn-ecsv">CSV</button>
           </div>
-          <div style="display:flex;gap:8px;margin:10px 0;">
-            <span class="pill pill-green" id="c-avail">0 verfügbar</span>
-            <span class="pill pill-red" id="c-used">0 verwendet</span>
-          </div>
-          <div class="codes-grid" id="codes-grid"></div>
-          <div class="divider"></div>
-          <div class="fg">
-            <label>Code zurücksetzen (bei Fehleingabe)</label>
-            <div style="display:flex;gap:8px;">
-              <input type="text" class="fi" id="reset-code-input" placeholder="CODE" style="text-transform:uppercase;letter-spacing:2px;font-weight:600;">
-              <button class="btn btn-ghost btn-sm" id="btn-reset-code">Zurücksetzen</button>
-            </div>
+          <div style="display:flex;gap:8px;margin:10px 0;"><span class="pill pill-g" id="c-av">0 frei</span><span class="pill pill-r" id="c-us">0 genutzt</span></div>
+          <div class="cg" id="cg"></div>
+          <div class="dv"></div>
+          <div class="fg"><label>Code zuruck&shy;setzen</label>
+            <div style="display:flex;gap:8px;"><input type="text" class="fi" id="rst-in" placeholder="CODE" style="text-transform:uppercase;letter-spacing:2px;font-weight:600;"><button class="btn bg bsm" id="btn-rst">Reset</button></div>
           </div>
         </div>
       </div>
-
-      <!-- Participants -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left">👥 Teilnehmer</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <div style="display:flex;gap:8px;margin:12px 0 10px;">
-            <button class="btn btn-ghost btn-sm" id="btn-export-parts">Export CSV</button>
-          </div>
-          <div id="pt-list"></div>
-        </div>
+      <div class="sec"><div class="sch" data-sec="pt"><div class="sct">&#128101; Teilnehmer</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><div style="margin:12px 0 10px;"><button class="btn bg bsm" id="btn-ep">Export CSV</button></div><div id="pt-list"></div></div>
       </div>
-
-      <!-- Danger Zone -->
-      <div class="sec">
-        <div class="sec-hd" onclick="toggleSec(this)">
-          <div class="sec-hd-left" style="color:var(--red);">⚠️ Gefahrenzone</div>
-          <span class="sec-chevron">▾</span>
-        </div>
-        <div class="sec-bd">
-          <p class="caption" style="margin-top:12px;margin-bottom:12px;">Diese Aktionen können nicht rückgängig gemacht werden.</p>
+      <div class="sec"><div class="sch" data-sec="dz"><div class="sct" style="color:var(--red);">&#9888; Gefahrenzone</div><span class="scv">&#9660;</span></div>
+        <div class="scb"><p class="cap" style="margin-top:12px;margin-bottom:12px;">Nicht ruckgangig zu machen.</p>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn btn-danger btn-sm" onclick="confirmReset('participants')">Alle Wetten löschen</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmReset('codes')">Alle Codes löschen</button>
-            <button class="btn btn-danger btn-sm" onclick="confirmReset('all')">Komplett-Reset</button>
+            <button class="btn bsm" style="background:var(--rs);color:var(--red);border:1px solid rgba(192,57,43,.2);" data-reset="bets">Wetten loschen</button>
+            <button class="btn bsm" style="background:var(--rs);color:var(--red);border:1px solid rgba(192,57,43,.2);" data-reset="codes">Codes loschen</button>
+            <button class="btn bsm" style="background:var(--rs);color:var(--red);border:1px solid rgba(192,57,43,.2);" data-reset="all">Komplett-Reset</button>
           </div>
         </div>
       </div>
-
-    </div>
-  </div>
-
-</div><!-- /wrap -->
-
-<!-- RESET MODAL -->
-<div class="modal-overlay hidden" id="modal">
-  <div class="modal">
-    <h3 id="modal-title">Bestätigung</h3>
-    <p id="modal-text">Bist du sicher?</p>
-    <div class="modal-btns">
-      <button class="btn btn-ghost btn-sm" id="btn-modal-cancel">Abbrechen</button>
-      <button class="btn btn-danger btn-sm" id="modal-confirm">Bestätigen</button>
+      <div style="text-align:center;margin-top:18px;"><button class="btn bg bsm" id="btn-adm-out2">Abmelden</button></div>
     </div>
   </div>
 </div>
-
-
+<div class="mo hid" id="modal"><div class="mc"><h3 id="m-title">Bestatigung</h3><p id="m-text"></p><div class="mbt"><button class="btn bg bsm" id="m-cancel">Abbrechen</button><button class="btn bsm" style="background:var(--red);color:#fff;" id="m-ok">OK</button></div></div></div>
 <script>
-// Global error catcher - shows errors visibly for debugging
-window.onerror = function(msg, src, line, col, err) {
-  var d = document.getElementById('js-error-banner');
-  if (!d) { d = document.createElement('div'); d.id='js-error-banner';
-    d.style.cssText='position:fixed;top:0;left:0;right:0;background:#C0392B;color:white;padding:10px 14px;font-size:12px;z-index:9999;font-family:monospace;cursor:pointer;';
-    d.onclick=function(){d.style.display='none';};
-    document.body.appendChild(d); }
-  d.textContent = '⚠ JS Error: ' + msg + ' (line ' + line + ') — tap to dismiss';
-  d.style.display = 'block';
-  return false;
-};
-// ══════════════════════════════════════════════════════
-//  STORAGE — two separate keys, never conflict
-//  hw_cfg  = config, questions, deadline, settings
-//  hw_codes = { "ABC123": { used: false }, ... }
-//  hw_bets  = [ { id, name, code, answers, score, ts } ]
-// ══════════════════════════════════════════════════════
-const KEY_CFG   = 'hw_cfg_v1';
-const KEY_CODES = 'hw_codes_v1';
-const KEY_BETS  = 'hw_bets_v1';
-
-function loadCfg() {
-  try { const r = localStorage.getItem(KEY_CFG); if (r) return JSON.parse(r); } catch(e) {}
-  return {
-    title: 'Jawort-Casino',
-    adminPw: 'admin123',
-    ticketPrice: 5,
-    deadline: { mode: 'open', date: '', time: '' },
-    correctAnswers: {},
-    questions: [
-      { id:1,  text: 'Weint jemand während der Trauung?',           options: ['Ja','Nein'] },
-      { id:2,  text: 'Kommt die Braut pünktlich (±5 Min.)?',        options: ['Ja, pünktlich','Nein, zu spät'] },
-      { id:3,  text: 'Wie lange dauert die Traurede?',              options: ['Unter 10 Min.','10–20 Min.','Über 20 Min.'] },
-      { id:4,  text: 'Welche Farbe hat der Brautstrauß?',           options: ['Weiß','Rosa','Bunt','Andere'] },
-      { id:5,  text: 'Trägt der Bräutigam Krawatte oder Fliege?',   options: ['Krawatte','Fliege','Keins von beiden'] },
-      { id:6,  text: 'Welche Farbe hat das Brautkleid?',            options: ['Reinweiß','Creme/Ivory','Andere Farbe'] },
-      { id:7,  text: 'Wie viele Reden gibt es insgesamt?',          options: ['1–2','3–4','5 oder mehr'] },
-      { id:8,  text: 'Welches Gericht wird zuerst serviert?',       options: ['Suppe','Salat','Vorspeise vom Teller'] },
-      { id:9,  text: 'Wann wird die Torte angeschnitten?',          options: ['Vor 20 Uhr','20–22 Uhr','Nach 22 Uhr'] },
-      { id:10, text: 'Wer weint als erstes?',                       options: ['Braut','Bräutigam','Jemand aus Publikum','Niemand'] },
-      { id:11, text: 'Wie lange dauert der erste Tanz?',            options: ['Unter 2 Min.','2–4 Min.','Über 4 Min.'] },
-      { id:12, text: 'Wann verlässt das Brautpaar die Feier?',      options: ['Vor Mitternacht','Nach Mitternacht'] }
-    ]
-  };
-}
-
-function loadCodes() {
-  try { const r = localStorage.getItem(KEY_CODES); if (r) return JSON.parse(r); } catch(e) {}
-  return {};
-}
-
-function loadBets() {
-  try { const r = localStorage.getItem(KEY_BETS); if (r) return JSON.parse(r); } catch(e) {}
-  return [];
-}
-
-function saveCfg()   { localStorage.setItem(KEY_CFG,   JSON.stringify(CFG)); }
-function saveCodes() { localStorage.setItem(KEY_CODES, JSON.stringify(CODES)); }
-function saveBets()  { localStorage.setItem(KEY_BETS,  JSON.stringify(BETS)); }
-
-// always read fresh from storage (never trust in-memory for codes)
-function getCodes()  { try { const r = localStorage.getItem(KEY_CODES); return r ? JSON.parse(r) : {}; } catch(e) { return {}; } }
-function getBets()   { try { const r = localStorage.getItem(KEY_BETS);  return r ? JSON.parse(r) : []; } catch(e) { return []; } }
-
-let CFG   = loadCfg();
-let CODES = loadCodes();
-let BETS  = loadBets();
-
-// ══════════════════════════════════
-//  DEADLINE
-// ══════════════════════════════════
-function isOpen() {
-  const d = CFG.deadline;
-  if (d.mode === 'open')   return true;
-  if (d.mode === 'closed') return false;
-  if (!d.date || !d.time)  return true;
-  return new Date() < new Date(d.date + 'T' + d.time);
-}
-
-function getDeadlineDate() {
-  const d = CFG.deadline;
-  if (!d.date || !d.time) return null;
-  return new Date(d.date + 'T' + d.time);
-}
-
-function updateBanner() {
-  const banner = document.getElementById('deadline-banner');
-  banner.className = 'deadline-banner';
-  if (CFG.deadline.mode === 'open') {
-    banner.classList.add('show','open');
-    banner.textContent = '✓ Wetten sind offen';
-  } else if (CFG.deadline.mode === 'closed') {
-    banner.classList.add('show','closed');
-    banner.textContent = '🔒 Wetten sind geschlossen';
-  } else {
-    const dl = getDeadlineDate();
-    if (dl && new Date() >= dl) {
-      banner.classList.add('show','closed');
-      banner.textContent = '🔒 Wetten geschlossen';
-    } else if (dl) {
-      const diff = dl - new Date();
-      if (diff < 7200000) { banner.classList.add('show','amber'); banner.textContent = '⏱ Wetten schließen bald!'; }
-    }
-  }
-}
-
-let cdInterval = null;
-function startCountdown() {
-  if (cdInterval) clearInterval(cdInterval);
-  const wrap = document.getElementById('countdown-wrap');
-  const dl = getDeadlineDate();
-  if (!dl || CFG.deadline.mode !== 'auto') { wrap.classList.add('hidden'); return; }
-  wrap.classList.remove('hidden');
-  function tick() {
-    const diff = dl - new Date();
-    if (diff <= 0) { wrap.classList.add('hidden'); clearInterval(cdInterval); checkBetState(); return; }
-    document.getElementById('cd-h').textContent = String(Math.floor(diff/3600000)).padStart(2,'0');
-    document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-    document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-  }
-  tick(); cdInterval = setInterval(tick, 1000);
-}
-
-// ══════════════════════════════════
-//  NAV
-// ══════════════════════════════════
-function showPage(p) {
-  // hide all pages
-  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
-  // deactivate all tabs
-  document.querySelectorAll('.hdr-tab').forEach(x => x.classList.remove('active'));
-  // show target page
-  var pageEl = document.getElementById('page-'+p);
-  if (pageEl) pageEl.classList.add('active');
-  // activate matching tab
-  var tabEl = document.querySelector('[data-page="'+p+'"]');
-  if (tabEl) tabEl.classList.add('active');
-  // page-specific actions
-  if (p === 'board') renderLeaderboard();
-  if (p === 'admin' && admIn) renderDash();
-  if (p === 'bet') { checkBetState(); startCountdown(); }
-}
-
-function checkBetState() {
-  const open = isOpen();
-  document.getElementById('bet-closed').classList.toggle('hidden', open);
-  document.getElementById('step-code').classList.toggle('hidden', !open);
-}
-
-document.getElementById('hdr-title').textContent = CFG.title;
-document.title = CFG.title;
-
-// ══════════════════════════════════
-//  BETTING FLOW
-// ══════════════════════════════════
-let _code = '', _name = '', _ans = {}, _submitLock = false;
-
-function showStep(s) {
-  ['step-code','step-name','step-q','step-done','step-mybet','bet-closed'].forEach(x =>
-    document.getElementById(x).classList.add('hidden'));
-  document.getElementById(s).classList.remove('hidden');
-}
-
-function validateCode() {
-  if (!isOpen()) { checkBetState(); return; }
-
-  // always read fresh from storage
-  const freshCodes = getCodes();
-  const freshBets  = getBets();
-
-  const v = document.getElementById('code-input').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
-  const e = document.getElementById('code-error');
-  e.classList.add('hidden');
-
-  if (!v) { showErr(e, 'Bitte Code eingeben.'); return; }
-
-  if (!(v in freshCodes)) {
-    showErr(e, 'Code nicht gefunden – bitte nochmal prüfen.');
-    return;
-  }
-
-  if (freshCodes[v].used === true) {
-    const existing = freshBets.find(x => x.code === v);
-    if (existing) { _code = v; _name = existing.name; showStep('step-done'); return; }
-    showErr(e, 'Dieser Code wurde bereits eingelöst.');
-    return;
-  }
-
-  // valid unused code
-  CODES = freshCodes;
-  BETS  = freshBets;
-  _code = v;
-  showStep('step-name');
-  setTimeout(() => document.getElementById('name-input').focus(), 100);
-}
-
-function startBetting() {
-  const n = document.getElementById('name-input').value.trim();
-  if (!n || n.length < 2) { alert('Bitte gültigen Namen eingeben.'); return; }
-  _name = n; _ans = {};
-  document.getElementById('p-nm').textContent = n;
-  document.getElementById('p-cd').textContent = 'Code: ' + _code;
-  document.getElementById('p-av').textContent = n.charAt(0).toUpperCase();
-  renderQuestions();
-  showStep('step-q');
-}
-
-function renderQuestions() {
-  document.getElementById('q-container').innerHTML = CFG.questions.map((q,i) => `
-    <div class="q-card" id="qc-${q.id}">
-      <div class="q-num">Frage ${i+1} / ${CFG.questions.length}</div>
-      <div class="q-text">${q.text}</div>
-      <div class="opts">
-        ${q.options.map(o => `<button class="opt" onclick="pick(${q.id},'${o.replace(/'/g,"\'")}',this)">${o}</button>`).join('')}
-      </div>
-    </div>`).join('');
-  updateProg();
-}
-
-function pick(qId, val, btn) {
-  document.querySelectorAll(`#qc-${qId} .opt`).forEach(b => b.classList.remove('sel'));
-  btn.classList.add('sel');
-  _ans[qId] = val;
-  document.getElementById('qc-'+qId).classList.add('answered');
-  updateProg();
-  const next = CFG.questions.find(q => !_ans[q.id]);
-  if (next) setTimeout(() => document.getElementById('qc-'+next.id)?.scrollIntoView({behavior:'smooth',block:'nearest'}), 200);
-}
-
-function updateProg() {
-  const d = Object.keys(_ans).length, t = CFG.questions.length;
-  document.getElementById('prog').style.width = (d/t*100)+'%';
-  document.getElementById('prog-lbl').textContent = d+' / '+t;
-  document.getElementById('submit-wrap').classList.toggle('hidden', d < t);
-}
-
-function submitBet() {
-  if (_submitLock) return;
-  if (Object.keys(_ans).length < CFG.questions.length) { alert('Alle Fragen beantworten!'); return; }
-  if (!isOpen()) { alert('Die Wettphase ist beendet.'); checkBetState(); return; }
-
-  // re-read fresh before writing
-  const freshCodes = getCodes();
-  const freshBets  = getBets();
-
-  if (!((_code) in freshCodes) || freshCodes[_code].used) {
-    alert('Fehler: Code ungültig oder bereits verwendet.'); return;
-  }
-
-  _submitLock = true;
-  const btn = document.querySelector('#submit-wrap .btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Wird gespeichert…'; }
-
-  setTimeout(() => {
-    freshCodes[_code].used = true;
-    freshBets.push({
-      id: Date.now(), name: _name, code: _code,
-      answers: {..._ans}, score: 0, ts: new Date().toISOString()
-    });
-    CODES = freshCodes;
-    BETS  = freshBets;
-    saveCodes();
-    saveBets();
-    recalc();
-    _submitLock = false;
-    showStep('step-done');
-  }, 300);
-}
-
-function viewMyBet() {
-  const freshBets = getBets();
-  const p = freshBets.find(x => x.code === _code);
-  if (!p) { showStep('step-done'); return; }
-  const ans = CFG.correctAnswers;
-  const hasResults = Object.keys(ans).length > 0;
-  document.getElementById('mybet-container').innerHTML = CFG.questions.map(q => {
-    const myAns = p.answers[q.id] || '–';
-    const correct = ans[q.id];
-    let cls = '';
-    if (hasResults && correct) cls = myAns === correct ? 'correct' : 'wrong';
-    return `<div class="my-bet-row">
-      <div class="my-bet-q">${q.text}</div>
-      <div class="my-bet-ans ${cls}">${myAns}${hasResults && correct && myAns !== correct ? ` <span style="color:var(--green);font-size:0.7rem;">(✓ ${correct})</span>` : ''}</div>
-    </div>`;
-  }).join('');
-  showStep('step-mybet');
-}
-
-// ══════════════════════════════════
-//  SCORING
-// ══════════════════════════════════
-function recalc() {
-  BETS = getBets();
-  BETS.forEach(p => {
-    p.score = Object.keys(CFG.correctAnswers)
-      .filter(k => p.answers[k] === CFG.correctAnswers[k]).length;
-  });
-  saveBets();
-}
-
-// ══════════════════════════════════
-//  LEADERBOARD
-// ══════════════════════════════════
-function renderLeaderboard() {
-  const bets   = getBets();
-  const sorted = [...bets].sort((a,b) => b.score-a.score);
-  const pot    = bets.length * CFG.ticketPrice;
-  const ans    = Object.keys(CFG.correctAnswers).length;
-
-  document.getElementById('lb-count').textContent = sorted.length + ' Teilnehmer';
-
-  const pc = document.getElementById('pot-card');
-  if (pot > 0) {
-    pc.classList.remove('hidden');
-    document.getElementById('pot-amt').textContent = pot + ' €';
-    document.getElementById('pot-win').textContent = Math.floor(pot/2) + ' €';
-    document.getElementById('pot-cpl').textContent = Math.floor(pot/2) + ' €';
-  }
-
-  const c = document.getElementById('lb-container');
-  if (!sorted.length) {
-    c.innerHTML = '<div class="card" style="text-align:center;padding:40px;color:var(--ink3);font-size:0.85rem;">Noch keine Teilnehmer</div>';
-    return;
-  }
-  const medals = ['🥇','🥈','🥉'];
-  c.innerHTML = sorted.map((p,i) => `
-    <div class="lb-entry" style="animation-delay:${i*0.03}s">
-      <div class="lb-rank">${medals[i]||(i+1)}</div>
-      <div style="flex:1">
-        <div class="lb-nm">${p.name}</div>
-        <div class="lb-sub">${p.score} von ${ans||CFG.questions.length} Punkten</div>
-      </div>
-      <div><div class="lb-pts">${p.score}</div><div class="lb-pts-lbl">Pkt.</div></div>
-    </div>`).join('');
-}
-
-// ══════════════════════════════════
-//  ADMIN
-// ══════════════════════════════════
-let admIn = false;
-let admTimeout = null;
-
-function admLogin() {
-  if (document.getElementById('adm-pw').value === CFG.adminPw) {
-    admIn = true;
-    document.getElementById('adm-login').classList.add('hidden');
-    document.getElementById('adm-dash').classList.remove('hidden');
-    renderDash();
-    resetAdmTimeout();
-  } else {
-    showErr(document.getElementById('adm-pw-err'), 'Falsches Passwort.');
-  }
-}
-
-function admLogout() {
-  admIn = false;
-  document.getElementById('adm-login').classList.remove('hidden');
-  document.getElementById('adm-dash').classList.add('hidden');
-  document.getElementById('adm-pw').value = '';
-  if (admTimeout) clearTimeout(admTimeout);
-}
-
-function resetAdmTimeout() {
-  if (admTimeout) clearTimeout(admTimeout);
-  admTimeout = setTimeout(() => { if(admIn){ admLogout(); alert('Session abgelaufen.'); } }, 30*60*1000);
-}
-document.addEventListener('click', () => { if(admIn) resetAdmTimeout(); });
-
-function renderDash() {
-  const codes = getCodes();
-  const bets  = getBets();
-  const used  = Object.values(codes).filter(c => c.used).length;
-  const total = Object.keys(codes).length;
-
-  document.getElementById('s-p').textContent   = bets.length;
-  document.getElementById('s-c').textContent   = used+'/'+total;
-  document.getElementById('s-pot').textContent = (bets.length * CFG.ticketPrice)+'€';
-  document.getElementById('s-rate').textContent= total ? Math.round(bets.length/total*100)+'%' : '0%';
-
-  const ans = Object.keys(CFG.correctAnswers).length;
-  if (bets.length && ans) {
-    document.getElementById('s-avg').textContent = (bets.reduce((a,p)=>a+p.score,0)/bets.length).toFixed(1);
-  } else {
-    document.getElementById('s-avg').textContent = '–';
-  }
-
-  const statusEl = document.getElementById('s-status');
-  statusEl.innerHTML = isOpen()
-    ? '<span class="pill pill-green"><span class="pill-dot"></span>Offen</span>'
-    : '<span class="pill pill-red"><span class="pill-dot"></span>Geschlossen</span>';
-
-  document.getElementById('s-title').value  = CFG.title;
-  document.getElementById('s-price').value  = CFG.ticketPrice;
-  document.getElementById('dl-date').value  = CFG.deadline.date || '';
-  document.getElementById('dl-time').value  = CFG.deadline.time || '';
-  document.getElementById('dl-mode').value  = CFG.deadline.mode || 'open';
-
-  renderQEditor(); renderAnsEditor(); renderCodesGrid(); renderPtList(); renderQAnalysis();
-}
-
-function saveDeadline() {
-  CFG.deadline.date = document.getElementById('dl-date').value;
-  CFG.deadline.time = document.getElementById('dl-time').value;
-  CFG.deadline.mode = document.getElementById('dl-mode').value;
-  saveCfg(); updateBanner(); startCountdown();
-  document.getElementById('dl-status').innerHTML =
-    `<div class="alert alert-success">Gespeichert. Status: <strong>${isOpen()?'Offen':'Geschlossen'}</strong></div>`;
-  renderDash();
-}
-
-function saveSettings() {
-  CFG.title = document.getElementById('s-title').value.trim() || CFG.title;
-  const pw  = document.getElementById('s-pw').value;
-  if (pw && pw.length >= 4) CFG.adminPw = pw;
-  else if (pw) { alert('Passwort min. 4 Zeichen.'); return; }
-  CFG.ticketPrice = parseInt(document.getElementById('s-price').value) || CFG.ticketPrice;
-  saveCfg();
-  document.getElementById('hdr-title').textContent = CFG.title;
-  document.title = CFG.title;
-  alert('✓ Gespeichert.');
-}
-
-function renderQEditor() {
-  document.getElementById('q-editor').innerHTML = CFG.questions.map((q,i) => `
-    <div class="qe-row">
-      <div class="qe-lbl">Frage ${i+1}</div>
-      <input class="fi" id="qe-t-${q.id}" value="${esc(q.text)}" placeholder="Fragetext">
-      <div class="qe-lbl" style="margin-top:5px;">Optionen</div>
-      <div class="opts-2">
-        ${q.options.map((o,oi) => `<input class="fi" id="qe-o-${q.id}-${oi}" value="${esc(o)}" placeholder="Option ${oi+1}">`).join('')}
-      </div>
-    </div>`).join('');
-}
-
-function saveQuestions() {
-  CFG.questions.forEach(q => {
-    const t = document.getElementById('qe-t-'+q.id);
-    if (t) q.text = t.value.trim() || q.text;
-    q.options = q.options.map((o,oi) => {
-      const e = document.getElementById(`qe-o-${q.id}-${oi}`);
-      return e ? (e.value.trim() || o) : o;
-    });
-  });
-  saveCfg(); renderAnsEditor(); renderQAnalysis();
-  alert('✓ Fragen gespeichert.');
-}
-
-function renderAnsEditor() {
-  document.getElementById('ans-editor').innerHTML = CFG.questions.map(q => `
-    <div class="ans-row">
-      <div class="ans-q">${q.text}</div>
-      <select class="ans-sel" id="ae-${q.id}">
-        <option value="">– offen –</option>
-        ${q.options.map(o => `<option value="${esc(o)}" ${CFG.correctAnswers[q.id]===o?'selected':''}>${o}</option>`).join('')}
-      </select>
-    </div>`).join('');
-}
-
-function saveAnswers() {
-  CFG.questions.forEach(q => {
-    const s = document.getElementById('ae-'+q.id);
-    if (s && s.value) CFG.correctAnswers[q.id] = s.value;
-  });
-  saveCfg(); recalc(); renderDash();
-  alert('✓ Auswertung gespeichert.');
-}
-
-// ── CODES ──
-function genCodes() {
-  const n   = parseInt(document.getElementById('gen-n')?.value) || 150;
-  const ch  = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const cur = getCodes();
-  let added = 0;
-  for (let i = 0; i < n; i++) {
-    let c, t = 0;
-    do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
-    while (cur[c] !== undefined && t < 100);
-    if (cur[c] === undefined) { cur[c] = {used:false}; added++; }
-  }
-  CODES = cur;
-  saveCodes();
-  renderCodesGrid();
-  alert(`✓ ${added} Codes generiert.`);
-}
-
-function renderCodesGrid() {
-  const codes = getCodes();
-  const all   = Object.entries(codes);
-  const av    = all.filter(([,v])=>!v.used).length;
-  const us    = all.filter(([,v])=> v.used).length;
-  document.getElementById('c-avail').textContent = av + ' verfügbar';
-  document.getElementById('c-used').textContent  = us + ' verwendet';
-  document.getElementById('codes-grid').innerHTML = all.map(([c,v]) =>
-    `<div class="cc ${v.used?'used':'free'}">${c}</div>`).join('');
-}
-
-function exportCodes() {
-  const lines = Object.entries(getCodes()).filter(([,v])=>!v.used).map(([k])=>k);
-  dlFile(lines.join('\n'), 'jawort-casino-codes.txt', 'text/plain');
-}
-
-function exportCSV() {
-  const bets = getBets();
-  const rows = [['Code','Status','Teilnehmer']];
-  Object.entries(getCodes()).forEach(([c,v]) => {
-    const p = bets.find(x => x.code===c);
-    rows.push([c, v.used?'Verwendet':'Verfügbar', p?p.name:'']);
-  });
-  dlFile(rows.map(r=>r.join(',')).join('\n'), 'codes.csv', 'text/csv');
-}
-
-function exportParticipantsCSV() {
-  const bets = getBets();
-  const ans  = Object.keys(CFG.correctAnswers).length;
-  const rows = [['Name','Code','Punkte','Zeitpunkt']];
-  [...bets].sort((a,b)=>b.score-a.score).forEach(p =>
-    rows.push([p.name, p.code, p.score+'/'+(ans||CFG.questions.length), fmtTime(p.ts)]));
-  dlFile(rows.map(r=>r.join(',')).join('\n'), 'teilnehmer.csv', 'text/csv');
-}
-
-function resetCodePrompt() {
-  const code = document.getElementById('reset-code-input').value.trim().toUpperCase();
-  if (!code) { alert('Code eingeben.'); return; }
-  const codes = getCodes();
-  if (!(code in codes)) { alert('Code nicht gefunden.'); return; }
-  if (!codes[code].used) { alert('Code wurde noch nicht verwendet.'); return; }
-  const bets = getBets();
-  const p = bets.find(x => x.code === code);
-  openModal(
-    'Code zurücksetzen',
-    `Code <strong>${code}</strong>${p?' ('+p.name+')':''} zurücksetzen?`,
-    () => {
-      const c2 = getCodes(); c2[code].used = false; CODES = c2; saveCodes();
-      const b2 = getBets().filter(x => x.code !== code); BETS = b2; saveBets();
-      recalc(); renderDash();
-      document.getElementById('reset-code-input').value = '';
-      alert('✓ Code zurückgesetzt.');
-    }
-  );
-}
-
-function renderPtList() {
-  const bets   = getBets();
-  const sorted = [...bets].sort((a,b) => b.score-a.score);
-  const ans    = Object.keys(CFG.correctAnswers).length;
-  document.getElementById('pt-list').innerHTML = sorted.length
-    ? sorted.map((p,i) => `
-      <div class="pt-row">
-        <div class="pt-rank">${i+1}</div>
-        <div style="flex:1">
-          <div class="pt-nm">${p.name}</div>
-          <div class="pt-sub">${p.code} · ${fmtTime(p.ts)}</div>
-        </div>
-        <div class="pt-score">${p.score}/${ans||CFG.questions.length}</div>
-      </div>`).join('')
-    : '<p class="caption" style="text-align:center;padding:16px 0;">Noch keine Teilnehmer</p>';
-}
-
-function renderQAnalysis() {
-  const bets = getBets();
-  const c = document.getElementById('q-analysis');
-  if (!bets.length) { c.innerHTML = '<p class="caption">Noch keine Daten.</p>'; return; }
-  c.innerHTML = CFG.questions.map(q => {
-    const total = bets.length;
-    const correct = CFG.correctAnswers[q.id];
-    const counts = {};
-    q.options.forEach(o => counts[o] = 0);
-    bets.forEach(p => { if (p.answers[q.id]) counts[p.answers[q.id]] = (counts[p.answers[q.id]]||0)+1; });
-    return `<div class="qa-row"><div class="qa-q">${q.text}</div>` +
-      q.options.map(o => {
-        const n = counts[o]||0;
-        const pct = total ? Math.round(n/total*100) : 0;
-        return `<div class="qa-opt ${correct===o?'qa-correct':''}">
-          <div class="qa-bar-nm">${o}</div>
-          <div class="qa-bar-wrap"><div class="qa-bar-fill" style="width:${pct}%"></div></div>
-          <div class="qa-bar-lbl">${n}</div>
-        </div>`;
-      }).join('') + '</div>';
-  }).join('');
-}
-
-// ── DANGER ZONE ──
-function confirmReset(type) {
-  const msgs = {
-    participants: 'Alle Wetten löschen? Codes bleiben erhalten.',
-    codes:        'Alle Codes löschen?',
-    all:          'Komplett-Reset? Alle Daten werden gelöscht!'
-  };
-  openModal('Bestätigung', msgs[type], () => {
-    if (type === 'all') {
-      localStorage.removeItem(KEY_CODES);
-      localStorage.removeItem(KEY_BETS);
-      CFG.correctAnswers = {};
-      saveCfg();
-      CODES = {}; BETS = [];
-    } else if (type === 'participants') {
-      BETS = []; saveBets();
-      const c = getCodes();
-      Object.keys(c).forEach(k => c[k].used = false);
-      CODES = c; saveCodes();
-      CFG.correctAnswers = {}; saveCfg();
-    } else if (type === 'codes') {
-      localStorage.removeItem(KEY_CODES);
-      CODES = {};
-    }
-    renderDash();
-    alert('✓ Zurückgesetzt.');
-  });
-}
-
-// ── MODAL ──
-let _modalCb = null;
-function openModal(title, text, cb) {
-  document.getElementById('modal-title').textContent = title;
-  document.getElementById('modal-text').innerHTML    = text;
-  _modalCb = cb;
-  document.getElementById('modal').classList.remove('hidden');
-  document.getElementById('modal-confirm').onclick = () => { closeModal(); if(_modalCb)_modalCb(); };
-}
-function closeModal() { document.getElementById('modal').classList.add('hidden'); _modalCb = null; }
-document.getElementById('modal').addEventListener('click', e => { if(e.target===e.currentTarget)closeModal(); });
-
-// ── HELPERS ──
-function esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
-function fmtTime(ts) { try { return new Date(ts).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}); } catch(e){return '';} }
-function dlFile(content, name, type) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([content],{type}));
-  a.download = name; a.click();
-}
-function showErr(el, msg) {
-  el.textContent = msg; el.classList.remove('hidden');
-  setTimeout(() => el.classList.add('hidden'), 4000);
-}
-function toggleSec(head) { head.closest('.sec').classList.toggle('open'); }
-
-// ── INIT ──
-function bindEvents() {
-  // Nav
-  var tabBet = document.getElementById('tab-bet');
-  var tabBoard = document.getElementById('tab-board');
-  var tabAdmin = document.getElementById('tab-admin');
-  if (tabBet)   tabBet.addEventListener('click',   function(){ showPage('bet'); });
-  if (tabBoard) tabBoard.addEventListener('click',  function(){ showPage('board'); });
-  if (tabAdmin) tabAdmin.addEventListener('click',  function(){ showPage('admin'); });
-
-  // Bet flow
-  var btnValidate = document.getElementById('btn-validate');
-  var btnStart    = document.getElementById('btn-start');
-  var btnSubmit   = document.getElementById('btn-submit');
-  var btnMybet    = document.getElementById('btn-mybet');
-  var btnBoard    = document.getElementById('btn-goto-board');
-  var btnBackDone = document.getElementById('btn-back-done');
-  if (btnValidate) btnValidate.addEventListener('click', validateCode);
-  if (btnStart)    btnStart.addEventListener('click',    startBetting);
-  if (btnSubmit)   btnSubmit.addEventListener('click',   submitBet);
-  if (btnMybet)    btnMybet.addEventListener('click',    viewMyBet);
-  if (btnBoard)    btnBoard.addEventListener('click',    function(){ showPage('board'); });
-  if (btnBackDone) btnBackDone.addEventListener('click', function(){ showStep('step-done'); });
-
-  // code input enter key
-  var codeInput = document.getElementById('code-input');
-  if (codeInput) codeInput.addEventListener('keydown', function(e){ if(e.key==='Enter') validateCode(); });
-  var nameInput = document.getElementById('name-input');
-  if (nameInput) nameInput.addEventListener('keydown', function(e){ if(e.key==='Enter') startBetting(); });
-  var admPw = document.getElementById('adm-pw');
-  if (admPw) admPw.addEventListener('keydown', function(e){ if(e.key==='Enter') admLogin(); });
-
-  // Admin
-  var btnAdmLogin    = document.getElementById('btn-adm-login');
-  var btnAdmLogout   = document.getElementById('btn-adm-logout');
-  var btnDeadline    = document.getElementById('btn-save-deadline');
-  var btnSettings    = document.getElementById('btn-save-settings');
-  var btnQuestions   = document.getElementById('btn-save-questions');
-  var btnAnswers     = document.getElementById('btn-save-answers');
-  var btnGenCodes    = document.getElementById('btn-gen-codes');
-  var btnExportCodes = document.getElementById('btn-export-codes');
-  var btnExportCsv   = document.getElementById('btn-export-csv');
-  var btnExportParts = document.getElementById('btn-export-parts');
-  var btnResetCode   = document.getElementById('btn-reset-code');
-  var btnModalCancel = document.getElementById('btn-modal-cancel');
-  if (btnAdmLogin)    btnAdmLogin.addEventListener('click',    admLogin);
-  if (btnAdmLogout)   btnAdmLogout.addEventListener('click',   admLogout);
-  if (btnDeadline)    btnDeadline.addEventListener('click',    saveDeadline);
-  if (btnSettings)    btnSettings.addEventListener('click',    saveSettings);
-  if (btnQuestions)   btnQuestions.addEventListener('click',   saveQuestions);
-  if (btnAnswers)     btnAnswers.addEventListener('click',     saveAnswers);
-  if (btnGenCodes)    btnGenCodes.addEventListener('click',    genCodes);
-  if (btnExportCodes) btnExportCodes.addEventListener('click', exportCodes);
-  if (btnExportCsv)   btnExportCsv.addEventListener('click',   exportCSV);
-  if (btnExportParts) btnExportParts.addEventListener('click', exportParticipantsCSV);
-  if (btnResetCode)   btnResetCode.addEventListener('click',   resetCodePrompt);
-  if (btnModalCancel) btnModalCancel.addEventListener('click', closeModal);
-
-  // Modal overlay close
-  var modal = document.getElementById('modal');
-  if (modal) modal.addEventListener('click', function(e){ if(e.target===e.currentTarget) closeModal(); });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  bindEvents();
-  checkBetState();
-  startCountdown();
-  updateBanner();
-  setInterval(updateBanner, 30000);
+(function(){
+"use strict";
+
+var KC="jc_codes_v1",KB="jc_bets_v1",KF="jc_cfg_v1";
+var DEF={title:"Jawort-Casino",adminPw:"admin123",ticketPrice:5,deadline:{mode:"open",date:"",time:""},correctAnswers:{},questions:[
+  {id:1, text:"Weint jemand waehrend der Trauung?",opts:["Ja","Nein"]},
+  {id:2, text:"Kommt die Braut puenktlich (+-5 Min.)?",opts:["Ja, puenktlich","Nein, zu spaet"]},
+  {id:3, text:"Wie lange dauert die Traurede?",opts:["Unter 10 Min.","10-20 Min.","Ueber 20 Min."]},
+  {id:4, text:"Welche Farbe hat der Brautstrauss?",opts:["Weiss","Rosa","Bunt","Andere"]},
+  {id:5, text:"Traegt der Braeutigam Krawatte oder Fliege?",opts:["Krawatte","Fliege","Keins von beiden"]},
+  {id:6, text:"Welche Farbe hat das Brautkleid?",opts:["Reinweiss","Creme/Ivory","Andere Farbe"]},
+  {id:7, text:"Wie viele Reden gibt es insgesamt?",opts:["1-2","3-4","5 oder mehr"]},
+  {id:8, text:"Welches Gericht wird zuerst serviert?",opts:["Suppe","Salat","Vorspeise vom Teller"]},
+  {id:9, text:"Wann wird die Torte angeschnitten?",opts:["Vor 20 Uhr","20-22 Uhr","Nach 22 Uhr"]},
+  {id:10,text:"Wer weint als erstes?",opts:["Braut","Braeutigam","Jemand aus Publikum","Niemand"]},
+  {id:11,text:"Wie lange dauert der erste Tanz?",opts:["Unter 2 Min.","2-4 Min.","Ueber 4 Min."]},
+  {id:12,text:"Wann verlaesst das Brautpaar die Feier?",opts:["Vor Mitternacht","Nach Mitternacht"]}
+]};
+function rd(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function GC(){return rd(KC,{});}
+function GB(){return rd(KB,[]);}
+function GF(){var f=rd(KF,null);if(!f)return JSON.parse(JSON.stringify(DEF));return f;}
+function SC(c){wr(KC,c);}function SB(b){wr(KB,b);}function SF(f){wr(KF,f);}
+function $(id){return document.getElementById(id);}
+function show(id){$(id).classList.remove("hid");}
+function hide(id){$(id).classList.add("hid");}
+function tog(id,c){c?show(id):hide(id);}
+function showErr(id,msg){var el=$(id);el.textContent=msg;el.classList.remove("hid");setTimeout(function(){el.classList.add("hid");},4000);}
+var curCode="",curName="",curAns={},subLock=false,admIn=false,admTmr=null,mCb=null;
+function isOpen(){var f=GF(),d=f.deadline||{mode:"open"};if(d.mode==="open")return true;if(d.mode==="closed")return false;if(!d.date||!d.time)return true;return new Date()<new Date(d.date+"T"+d.time);}
+function updateBanner(){var f=GF(),d=f.deadline||{mode:"open"},el=$("bnr");el.className="bnr";if(d.mode==="open"){el.className="bnr show open";el.textContent="Wetten sind offen";}else if(d.mode==="closed"){el.className="bnr show closed";el.textContent="Wetten sind geschlossen";}else if(d.date&&d.time){var dl=new Date(d.date+"T"+d.time);if(new Date()>=dl){el.className="bnr show closed";el.textContent="Wetten geschlossen";}else if(dl-new Date()<7200000){el.className="bnr show warn";el.textContent="Wetten schliessen bald!";}}}
+var cdTick=null;
+function startCd(){if(cdTick)clearInterval(cdTick);var f=GF(),d=f.deadline||{};if(d.mode!=="auto"||!d.date||!d.time){hide("cd-wrap");return;}var dl=new Date(d.date+"T"+d.time);show("cd-wrap");function tick(){var diff=dl-new Date();if(diff<=0){hide("cd-wrap");clearInterval(cdTick);refreshBet();return;}$("cd-h").textContent=String(Math.floor(diff/3600000)).padStart(2,"0");$("cd-m").textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,"0");$("cd-s").textContent=String(Math.floor((diff%60000)/1000)).padStart(2,"0");}tick();cdTick=setInterval(tick,1000);}
+function showPage(p){document.querySelectorAll(".pg").forEach(function(e){e.classList.remove("on");});document.querySelectorAll(".tab").forEach(function(e){e.classList.remove("on");});var pg=$("pg-"+p),tab=document.querySelector(".tab[data-pg='"+p+"']");if(pg)pg.classList.add("on");if(tab)tab.classList.add("on");if(p==="board")renderBoard();if(p==="admin"&&admIn)renderDash();if(p==="bet"){refreshBet();startCd();}}
+function showStep(s){["s-closed","s-code","s-name","s-q","s-done","s-mybet"].forEach(function(id){hide(id);});show(s);}
+function refreshBet(){isOpen()?showStep("s-code"):showStep("s-closed");}
+function validateCode(){if(!isOpen()){refreshBet();return;}var raw=($("code-in").value||"").trim().toUpperCase().replace(/[^A-Z0-9]/g,"");hide("code-err");if(!raw){showErr("code-err","Bitte Code eingeben.");return;}var codes=GC();if(!codes.hasOwnProperty(raw)){showErr("code-err","Code nicht gefunden.");return;}if(codes[raw].used===true){var bets=GB(),ex=null;for(var i=0;i<bets.length;i++)if(bets[i].code===raw){ex=bets[i];break;}if(ex){curCode=raw;curName=ex.name;showStep("s-done");return;}showErr("code-err","Bereits eingeloest.");return;}curCode=raw;showStep("s-name");setTimeout(function(){var n=$("name-in");if(n)n.focus();},100);}
+function startBetting(){var n=($("name-in").value||"").trim();if(!n||n.length<2){alert("Bitte Namen eingeben.");return;}curName=n;curAns={};$("pav").textContent=n.charAt(0).toUpperCase();$("pnm").textContent=n;$("pcd").textContent="Code: "+curCode;renderQs();showStep("s-q");}
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function escA(s){return String(s||"").replace(/"/g,"&quot;").replace(/'/g,"&#39;");}
+function renderQs(){var f=GF(),qs=f.questions,html="";for(var i=0;i<qs.length;i++){var q=qs[i];html+='<div class="qc" id="qc'+q.id+'"><div class="qn">Frage '+(i+1)+' / '+qs.length+'</div><div class="qt">'+esc(q.text)+'</div><div class="opts">';for(var j=0;j<q.opts.length;j++)html+='<button class="opt" data-qid="'+q.id+'" data-val="'+escA(q.opts[j])+'">'+esc(q.opts[j])+'</button>';html+='</div></div>';}$("q-con").innerHTML=html;$("q-con").querySelectorAll(".opt").forEach(function(btn){btn.addEventListener("click",function(){var qid=this.getAttribute("data-qid"),val=this.getAttribute("data-val");$("q-con").querySelectorAll(".opt[data-qid='"+qid+"']").forEach(function(b){b.classList.remove("sel");});this.classList.add("sel");curAns[qid]=val;$("qc"+qid).classList.add("ans");updateProg();var f2=GF();for(var y=0;y<f2.questions.length;y++){if(!curAns[f2.questions[y].id]){(function(id){setTimeout(function(){var el=$("qc"+id);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});},200);})(f2.questions[y].id);break;}}});});updateProg();}
+function updateProg(){var f=GF(),d=Object.keys(curAns).length,t=f.questions.length;$("prf").style.width=(d/t*100)+"%";$("prl").textContent=d+"/"+t;tog("s-submit",d>=t);}
+function submitBet(){if(subLock)return;var f=GF();if(Object.keys(curAns).length<f.questions.length){alert("Alle Fragen beantworten!");return;}if(!isOpen()){alert("Wettphase beendet.");refreshBet();return;}var codes=GC();if(!codes.hasOwnProperty(curCode)||codes[curCode].used){alert("Code ungueltig.");return;}subLock=true;var btn=$("btn-submit");if(btn){btn.disabled=true;btn.textContent="Speichert...";}setTimeout(function(){codes[curCode].used=true;SC(codes);var bets=GB();bets.push({id:Date.now(),name:curName,code:curCode,answers:JSON.parse(JSON.stringify(curAns)),score:0,ts:new Date().toISOString()});recalc(bets,f);SB(bets);subLock=false;showStep("s-done");},300);}
+function viewMyBet(){var bets=GB(),f=GF(),p=null;for(var i=0;i<bets.length;i++)if(bets[i].code===curCode){p=bets[i];break;}if(!p){showStep("s-done");return;}var ans=f.correctAnswers||{},hasR=Object.keys(ans).length>0,html="";for(var j=0;j<f.questions.length;j++){var q=f.questions[j],my=p.answers[q.id]||"-",co=ans[q.id],cls=hasR&&co?(my===co?" ok":" no"):"";html+='<div class="mbr"><div class="mbq">'+esc(q.text)+'</div><div class="mba'+cls+'">'+esc(my)+'</div></div>';}$("mybet-con").innerHTML=html;showStep("s-mybet");}
+function recalc(bets,f){var ans=f.correctAnswers||{},keys=Object.keys(ans);for(var i=0;i<bets.length;i++){var s=0;for(var j=0;j<keys.length;j++)if(bets[i].answers[keys[j]]===ans[keys[j]])s++;bets[i].score=s;}}
+function renderBoard(){var bets=GB(),f=GF(),sorted=bets.slice().sort(function(a,b){return b.score-a.score;}),pot=bets.length*f.ticketPrice,ans=Object.keys(f.correctAnswers||{}).length;$("lb-cnt").textContent=sorted.length+" Teilnehmer";if(pot>0){show("pot-card");$("pot-amt").textContent=pot+" \u20AC";$("pot-win").textContent=Math.floor(pot/2)+" \u20AC";$("pot-cpl").textContent=Math.floor(pot/2)+" \u20AC";}var medals=["\uD83E\uDD47","\uD83E\uDD48","\uD83E\uDD49"];if(!sorted.length){$("lb-con").innerHTML='<div class="card" style="text-align:center;padding:40px;color:var(--ink3);">Noch keine Teilnehmer</div>';return;}var html="";for(var i=0;i<sorted.length;i++){var p=sorted[i];html+='<div class="lbe" style="animation-delay:'+(i*0.03)+'s"><div class="lbr">'+(medals[i]||(i+1))+'</div><div style="flex:1"><div class="lbn">'+esc(p.name)+'</div><div style="font-size:.7rem;color:var(--ink3);">'+p.score+' von '+(ans||f.questions.length)+' Pkt.</div></div><div><div class="lbp">'+p.score+'</div><div style="font-size:.62rem;color:var(--ink3);">Pkt.</div></div></div>';}$("lb-con").innerHTML=html;}
+function admLogin(){var f=GF();if($("adm-pw").value===f.adminPw){admIn=true;hide("adm-login");show("adm-dash");renderDash();if(admTmr)clearTimeout(admTmr);admTmr=setTimeout(function(){if(admIn){admLogout();alert("Session abgelaufen.");}},1800000);}else{showErr("adm-err","Falsches Passwort.");}}
+function admLogout(){admIn=false;show("adm-login");hide("adm-dash");$("adm-pw").value="";if(admTmr)clearTimeout(admTmr);}
+function renderDash(){var codes=GC(),bets=GB(),f=GF(),all=Object.keys(codes).length,used=Object.values(codes).filter(function(c){return c.used;}).length;$("st-p").textContent=bets.length;$("st-c").textContent=used+"/"+all;$("st-pot").textContent=(bets.length*f.ticketPrice)+"\u20AC";$("st-rate").textContent=all?Math.round(bets.length/all*100)+"%":"0%";var ans=Object.keys(f.correctAnswers||{}).length;$("st-avg").textContent=(bets.length&&ans)?(bets.reduce(function(a,p){return a+p.score;},0)/bets.length).toFixed(1):"-";$("st-stat").innerHTML=isOpen()?'<span class="pill pill-g"><span class="pdot"></span>Offen</span>':'<span class="pill pill-r"><span class="pdot"></span>Geschlossen</span>';$("st-title").value=f.title;$("st-price").value=f.ticketPrice;$("dl-date").value=(f.deadline||{}).date||"";$("dl-time").value=(f.deadline||{}).time||"";$("dl-mode").value=(f.deadline||{}).mode||"open";renderQEd(f);renderAnsEd(f);renderCG(codes);renderPT(bets,f);renderAZ(bets,f);}
+function saveDeadline(){var f=GF();f.deadline={date:$("dl-date").value,time:$("dl-time").value,mode:$("dl-mode").value};SF(f);updateBanner();startCd();$("dl-msg").innerHTML='<div class="al al-s">Gespeichert. '+(isOpen()?"Offen":"Geschlossen")+'</div>';renderDash();}
+function saveSettings(){var f=GF(),t=$("st-title").value.trim();if(t)f.title=t;var pw=$("st-pw").value;if(pw&&pw.length>=4)f.adminPw=pw;else if(pw){alert("Min. 4 Zeichen.");return;}f.ticketPrice=parseInt($("st-price").value)||f.ticketPrice;SF(f);$("hdr-title").textContent=f.title;document.title=f.title;alert("Gespeichert.");}
+function renderQEd(f){var qs=f.questions,html="";for(var i=0;i<qs.length;i++){var q=qs[i];html+='<div class="qer"><div class="qel">Frage '+(i+1)+'</div><input class="fi" id="qet'+q.id+'" value="'+escA(q.text)+'"><div class="qel" style="margin-top:5px;">Optionen</div><div class="og">';for(var j=0;j<q.opts.length;j++)html+='<input class="fi" id="qeo'+q.id+'_'+j+'" value="'+escA(q.opts[j])+'">';html+='</div></div>';}$("q-ed").innerHTML=html;}
+function saveQs(){var f=GF();for(var i=0;i<f.questions.length;i++){var q=f.questions[i],t=$("qet"+q.id);if(t&&t.value.trim())q.text=t.value.trim();for(var j=0;j<q.opts.length;j++){var o=$("qeo"+q.id+"_"+j);if(o&&o.value.trim())q.opts[j]=o.value.trim();}}SF(f);renderAnsEd(f);alert("Fragen gespeichert.");}
+function renderAnsEd(f){var qs=f.questions,ans=f.correctAnswers||{},html="";for(var i=0;i<qs.length;i++){var q=qs[i];html+='<div class="ar"><div class="aq">'+esc(q.text)+'</div><select class="as" id="ae'+q.id+'"><option value="">- offen -</option>';for(var j=0;j<q.opts.length;j++)html+='<option value="'+escA(q.opts[j])+'"'+(ans[q.id]===q.opts[j]?" selected":"")+'>'+esc(q.opts[j])+'</option>';html+='</select></div>';}$("ans-ed").innerHTML=html;}
+function saveAns(){var f=GF();f.correctAnswers=f.correctAnswers||{};for(var i=0;i<f.questions.length;i++){var q=f.questions[i],s=$("ae"+q.id);if(s&&s.value)f.correctAnswers[q.id]=s.value;}var bets=GB();recalc(bets,f);SB(bets);SF(f);renderDash();alert("Auswertung gespeichert.");}
+function renderCG(codes){var all=Object.entries(codes),av=all.filter(function(e){return!e[1].used;}).length,us=all.filter(function(e){return e[1].used;}).length;$("c-av").textContent=av+" frei";$("c-us").textContent=us+" genutzt";var html="";for(var i=0;i<all.length;i++)html+='<div class="cc '+(all[i][1].used?"us":"fr")+'">'+all[i][0]+'</div>';$("cg").innerHTML=html;}
+function genCodes(){var n=parseInt($("gen-n").value)||150,ch="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",codes=GC(),added=0;for(var i=0;i<n;i++){var c="",t=0;do{c="";for(var j=0;j<6;j++)c+=ch[Math.floor(Math.random()*ch.length)];t++;}while(codes.hasOwnProperty(c)&&t<100);if(!codes.hasOwnProperty(c)){codes[c]={used:false};added++;}}SC(codes);renderCG(codes);alert(added+" Codes generiert.");}
+function dlFile(content,name,type){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type:type}));a.download=name;a.click();}
+function expTxt(){var c=GC(),lines=Object.keys(c).filter(function(k){return!c[k].used;});dlFile(lines.join("\n"),"codes.txt","text/plain");}
+function expCsv(){var c=GC(),b=GB(),rows=[["Code","Status","Teilnehmer"]];Object.keys(c).forEach(function(k){var p=null;for(var i=0;i<b.length;i++)if(b[i].code===k){p=b[i];break;}rows.push([k,c[k].used?"Verwendet":"Frei",p?p.name:""]);});dlFile(rows.map(function(r){return r.join(",");}).join("\n"),"codes.csv","text/csv");}
+function expParts(){var b=GB(),f=GF(),ans=Object.keys(f.correctAnswers||{}).length,rows=[["Name","Code","Punkte","Zeit"]];b.slice().sort(function(a,c){return c.score-a.score;}).forEach(function(p){rows.push([p.name,p.code,p.score+"/"+(ans||f.questions.length),fmtT(p.ts)]);});dlFile(rows.map(function(r){return r.join(",");}).join("\n"),"teilnehmer.csv","text/csv");}
+function fmtT(ts){try{return new Date(ts).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});}catch(e){return "";}}
+function rstCode(){var code=($("rst-in").value||"").trim().toUpperCase();if(!code){alert("Code eingeben.");return;}var codes=GC();if(!codes.hasOwnProperty(code)){alert("Nicht gefunden.");return;}if(!codes[code].used){alert("Noch nicht verwendet.");return;}var bets=GB(),nm="";for(var i=0;i<bets.length;i++)if(bets[i].code===code){nm=bets[i].name;break;}openModal("Reset","Code "+code+(nm?" ("+nm+")":"")+" zuruecksetzen?",function(){var c=GC();c[code].used=false;SC(c);var nb=GB().filter(function(b){return b.code!==code;});SB(nb);var f=GF();recalc(nb,f);renderDash();$("rst-in").value="";alert("Zurueckgesetzt.");});}
+function renderPT(bets,f){var sorted=bets.slice().sort(function(a,b){return b.score-a.score;}),ans=Object.keys(f.correctAnswers||{}).length;if(!sorted.length){$("pt-list").innerHTML='<p class="cap" style="text-align:center;padding:16px;">Noch keine Teilnehmer</p>';return;}var html="";for(var i=0;i<sorted.length;i++){var p=sorted[i];html+='<div class="ptr"><div style="font-family:\'Instrument Serif\',serif;font-size:1rem;color:var(--ink3);min-width:20px;">'+(i+1)+'</div><div style="flex:1"><div style="font-size:.83rem;font-weight:500;">'+esc(p.name)+'</div><div style="font-size:.68rem;color:var(--ink3);">'+p.code+' &middot; '+fmtT(p.ts)+'</div></div><div style="font-family:\'Instrument Serif\',serif;font-size:1rem;color:var(--acc);">'+p.score+'/'+(ans||f.questions.length)+'</div></div>';}$("pt-list").innerHTML=html;}
+function renderAZ(bets,f){if(!bets.length){$("qaz").innerHTML='<p class="cap">Noch keine Daten.</p>';return;}var ans=f.correctAnswers||{},html="";for(var i=0;i<f.questions.length;i++){var q=f.questions[i],tot=bets.length,co=ans[q.id],cnt={};for(var k=0;k<q.opts.length;k++)cnt[q.opts[k]]=0;for(var j=0;j<bets.length;j++){var a=bets[j].answers[q.id];if(a)cnt[a]=(cnt[a]||0)+1;}html+='<div class="qar"><div style="font-size:.83rem;font-weight:600;margin-bottom:8px;">'+esc(q.text)+'</div>';for(var m=0;m<q.opts.length;m++){var o=q.opts[m],n=cnt[o]||0,pct=tot?Math.round(n/tot*100):0;html+='<div class="qao'+(co===o?' qac':'')+'"><div class="qabn">'+esc(o)+'</div><div class="qabw"><div class="qabf" style="width:'+pct+'%"></div></div><div class="qabl">'+n+'</div></div>';}html+='</div>';}$("qaz").innerHTML=html;}
+function doReset(type){var msgs={bets:"Alle Wetten loeschen?",codes:"Alle Codes loeschen?",all:"Komplett-Reset?"};openModal("Bestaetigung",msgs[type],function(){if(type==="all"){localStorage.removeItem(KC);localStorage.removeItem(KB);var f=GF();f.correctAnswers={};SF(f);}if(type==="bets"){SB([]);var c=GC();Object.keys(c).forEach(function(k){c[k].used=false;});SC(c);var f2=GF();f2.correctAnswers={};SF(f2);}if(type==="codes")localStorage.removeItem(KC);renderDash();alert("Zurueckgesetzt.");});}
+function openModal(title,text,cb){$("m-title").textContent=title;$("m-text").textContent=text;mCb=cb;$("modal").classList.remove("hid");}
+function closeModal(){$("modal").classList.add("hid");mCb=null;}
+document.addEventListener("DOMContentLoaded",function(){
+  document.querySelectorAll(".tab[data-pg]").forEach(function(el){el.addEventListener("click",function(){showPage(this.getAttribute("data-pg"));});});
+  document.querySelectorAll(".sch[data-sec]").forEach(function(el){el.addEventListener("click",function(){this.closest(".sec").classList.toggle("op");});});
+  document.querySelectorAll("[data-goto]").forEach(function(el){el.addEventListener("click",function(){showPage(this.getAttribute("data-goto"));});});
+  document.querySelectorAll("[data-reset]").forEach(function(el){el.addEventListener("click",function(){doReset(this.getAttribute("data-reset"));});});
+  $("btn-go").addEventListener("click",validateCode);
+  $("btn-next").addEventListener("click",startBetting);
+  $("btn-submit").addEventListener("click",submitBet);
+  $("btn-mybet").addEventListener("click",viewMyBet);
+  $("btn-back").addEventListener("click",function(){showStep("s-done");});
+  $("code-in").addEventListener("keydown",function(e){if(e.key==="Enter")validateCode();});
+  $("name-in").addEventListener("keydown",function(e){if(e.key==="Enter")startBetting();});
+  $("adm-pw").addEventListener("keydown",function(e){if(e.key==="Enter")admLogin();});
+  $("btn-adm-login").addEventListener("click",admLogin);
+  $("btn-adm-out").addEventListener("click",admLogout);
+  $("btn-adm-out2").addEventListener("click",admLogout);
+  $("btn-dl").addEventListener("click",saveDeadline);
+  $("btn-st").addEventListener("click",saveSettings);
+  $("btn-qs").addEventListener("click",saveQs);
+  $("btn-as").addEventListener("click",saveAns);
+  $("btn-gen").addEventListener("click",genCodes);
+  $("btn-etxt").addEventListener("click",expTxt);
+  $("btn-ecsv").addEventListener("click",expCsv);
+  $("btn-ep").addEventListener("click",expParts);
+  $("btn-rst").addEventListener("click",rstCode);
+  $("m-cancel").addEventListener("click",closeModal);
+  $("m-ok").addEventListener("click",function(){closeModal();if(mCb)mCb();});
+  $("modal").addEventListener("click",function(e){if(e.target===this)closeModal();});
+  var f=GF();$("hdr-title").textContent=f.title;document.title=f.title;
+  refreshBet();startCd();updateBanner();setInterval(updateBanner,30000);
 });
+
+})();
 </script>
 </body>
 </html>
