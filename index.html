@@ -299,7 +299,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);min-he
       <div class="hero-date-dot"></div>
       <span class="hero-date-txt">LUDWIGSBURG</span>
       <div class="hero-date-dot"></div>
-      <span class="hero-date-txt" style="opacity:0.45;">v0.01</span>
+      <span class="hero-date-txt" style="opacity:0.45;">v0.02</span>
     </div>
   </div>
 </div>
@@ -673,7 +673,27 @@ function defaultState() {
   };
 }
 
-function save() { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+function save() {
+  try {
+    localStorage.setItem(STORE_KEY, JSON.stringify(S));
+  } catch(e) {
+    console.error('Save failed:', e);
+  }
+}
+
+// always sync S from localStorage before critical reads
+function syncFromStorage() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    S.codes = parsed.codes || S.codes;
+    S.participants = parsed.participants || S.participants;
+    S.correctAnswers = parsed.correctAnswers || S.correctAnswers;
+    S.deadline = parsed.deadline || S.deadline;
+    S.initialized = parsed.initialized;
+  } catch(e) {}
+}
 
 // auto-init: only generate codes if this is a brand new state (no localStorage existed)
 // once initialized flag is set, NEVER auto-generate again
@@ -798,12 +818,25 @@ function showStep(s) {
 
 function validateCode() {
   if (!isOpen()) { checkBetState(); return; }
-  const v = document.getElementById('code-input').value.trim().toUpperCase();
+  const raw = document.getElementById('code-input').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
   const e = document.getElementById('code-error');
   e.classList.add('hidden');
 
-  if (!v) { showErr(e, 'Bitte Code eingeben.'); return; }
-  if (!S.codes[v]) { showErr(e, 'Ungültiger Code – bitte nochmal prüfen.'); return; }
+  if (!raw) { showErr(e, 'Bitte Code eingeben.'); return; }
+
+  // reload state fresh from localStorage before every validation
+  try {
+    const fresh = localStorage.getItem(STORE_KEY);
+    if (fresh) {
+      const parsed = JSON.parse(fresh);
+      S.codes = parsed.codes || {};
+      S.participants = parsed.participants || [];
+      S.correctAnswers = parsed.correctAnswers || {};
+    }
+  } catch(err) {}
+
+  const v = raw;
+  if (!(v in S.codes)) { showErr(e, 'Code nicht gefunden – bitte nochmal prüfen.'); return; }
   if (S.codes[v].used) {
     const p = S.participants.find(x => x.code === v);
     if (p) { _code = v; _name = p.name; showStep('step-done'); return; }
@@ -860,6 +893,7 @@ function submitBet() {
   if (_submitLock) return;
   if (Object.keys(_ans).length < S.questions.length) { alert('Alle Fragen beantworten!'); return; }
   if (!isOpen()) { alert('Die Wettphase ist beendet.'); checkBetState(); return; }
+  syncFromStorage(); // ensure we have latest state before writing
   _submitLock = true;
   // debounce
   const btn = document.querySelector('#submit-wrap .btn');
