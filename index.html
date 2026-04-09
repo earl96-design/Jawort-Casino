@@ -673,7 +673,18 @@ function defaultState() {
 
 function save() { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
 
-// codes are only generated manually via admin dashboard
+// auto-init codes only on very first run (no codes AND no firstRun flag)
+if (!S.hasOwnProperty('initialized')) {
+  S.initialized = true;
+  const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  for (let i = 0; i < 150; i++) {
+    let c, t = 0;
+    do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
+    while (S.codes[c] !== undefined && t < 100);
+    if (S.codes[c] === undefined) S.codes[c] = {used:false};
+  }
+  save();
+}
 
 // ══════════════════════════════════
 //  DEADLINE ENGINE
@@ -1181,19 +1192,14 @@ function confirmReset(type) {
       const pw = S.adminPw;
       S = defaultState();
       S.adminPw = pw;
-      const ch = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      for (let i = 0; i < 150; i++) {
-        let c, t = 0;
-        do { c = Array.from({length:6}, () => ch[Math.floor(Math.random()*ch.length)]).join(''); t++; }
-        while (S.codes[c] !== undefined && t < 100);
-        if (S.codes[c] === undefined) S.codes[c] = {used:false};
-      }
+      S.initialized = true; // keep flag so auto-init doesnt re-run
     } else if (type === 'participants') {
       S.participants = [];
       S.correctAnswers = {};
       Object.keys(S.codes).forEach(k => S.codes[k].used = false);
     } else if (type === 'codes') {
       S.codes = {};
+      S.initialized = true; // keep flag so auto-init doesnt re-run
     }
     save();
     renderDash();
